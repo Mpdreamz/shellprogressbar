@@ -96,10 +96,6 @@ publish/
 *.Publish.xml
 *.pubxml
 
-# NuGet Packages Directory
-## TODO: If you have NuGet Package Restore enabled, uncomment the next line
-#packages/
-
 # Windows Azure Build Output
 csx
 *.build.csdef
@@ -149,3 +145,12 @@ $RECYCLE.BIN/
 
 # Mac crap
 .DS_Store
+
+
+build/tmp
+build/tmp/*
+build/_out/*
+build/keys/private.snk
+build/keys/keypair.snk
+!build/tools/*
+!build/tools/scriptcs/*
