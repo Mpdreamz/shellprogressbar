@@ -6,9 +6,8 @@
     <title>ProgressBar - A progress bar for console applications</title>
     <authors>Martijn Laarman</authors>
     <owners>Martijn Laarman</owners>
-    <iconUrl></iconUrl>
     <licenseUrl>http://mpdreamz.mit-license.org/</licenseUrl>
-    <projectUrl>https://github.com/Mpdreamz/NEST</projectUrl>
+    <projectUrl>https://github.com/Mpdreamz/shellprogressbar</projectUrl>
     <summary>A progress bar for console applications</summary>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A progress bar for console applications</description>

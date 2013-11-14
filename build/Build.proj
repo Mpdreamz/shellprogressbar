@@ -12,7 +12,7 @@
 
 	<PropertyGroup>
 		<Configuration Condition="'$(Configuration)'==''" >Release</Configuration>
-		<BuildDir>$(MSBuildProjectDirectory)\tmp</BuildDirSigned>
+		<BuildDir>$(MSBuildProjectDirectory)\tmp</BuildDir>
 		<SolutionFile>$(SrcDir)\ShellProgressBar.sln</SolutionFile>
 	</PropertyGroup>
 
@@ -36,21 +36,28 @@
 	<Target Name="NuGetPackage" DependsOnTargets="Compile">
 		<ItemGroup>
 			<MainBinaries Include="$(SrcDir)\**\ShellProgressBar\bin\$(Configuration)\**\*.*" />
+			
 		</ItemGroup>
 
 		<!-- First copy the nuspec template files to the build dir -->
 		<Copy SourceFiles="..\build\ShellProgressBar.nuspec" DestinationFolder="$(BuildDir)" />
 		<!-- Copy the source files to the package dir -->
-		<Copy SourceFiles="@(MainBinaries)" DestinationFolder="$(BuildDir)\lib\NET20\" />
+		<Copy SourceFiles="@(MainBinaries)" DestinationFolder="$(BuildDir)\lib\NET4\" />
 
 		<!-- Get the version number of the main FV assembly to insert into the nuspec files -->
-		<GetAssemblyIdentity AssemblyFiles="$(BuildDir)\lib\NET20\ShellProgressBar.dll">
+		<GetAssemblyIdentity AssemblyFiles="$(BuildDir)\lib\NET4\ShellProgressBar.dll">
 			<Output TaskParameter="Assemblies" ItemName="AsmInfo" />
 		</GetAssemblyIdentity>
 
 		<!-- Create signed copies -->
-		<Exec WorkingDirectory="$(BuildDirSigned)"
-			  Command='$(MSBuildProjectDirectory)\tools\ilmerge.exe $(<BuildDirSigned>)\lib\NET20\ShellProgressBar.dll /keyfile:$(MSBuildProjectDirectory)\keys\keypair.snk /out:$(<BuildDirSigned>)\lib\NET20\ShellProgressBar.dll /targetplatform:v4,"%ProgramFiles(x86)%\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0"' />
+		<Exec WorkingDirectory="$(BuildDir)"
+			  Command='$(MSBuildProjectDirectory)\tools\ilmerge.exe $(BuildDir)\lib\NET4\ShellProgressBar.dll /keyfile:$(MSBuildProjectDirectory)\keys\keypair.snk /out:$(BuildDir)\lib\ShellProgressBar.dll /targetplatform:v4,"%ProgramFiles(x86)%\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0"' />
+		<ItemGroup>
+			<TmpSignedBinary Include="$(BuildDir)\lib\ShellProgressBar.*" />
+		</ItemGroup>		
+
+		<Copy SourceFiles="@(TmpSignedBinary)" DestinationFolder="$(BuildDir)\lib\NET4\" />
+		<Delete Files="@(TmpSignedBinary)" />
 
 		<!-- insert the version number into the nuspec files -->
 		<XmlUpdate
