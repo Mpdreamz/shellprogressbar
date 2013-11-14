@@ -4,6 +4,7 @@ ShellProgressBar - display progress in your console application
 
 # Examples
 
+![example](https://github.com/Mpdreamz/shellprogressbar/raw/master/doc/pbar-windows.gif)
 
 # Usage 
 
