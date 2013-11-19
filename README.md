@@ -2,9 +2,15 @@ ShellProgressBar
 ===================
 ShellProgressBar - display progress in your console application
 
-# Examples
+# Example
 
 ![example](https://github.com/Mpdreamz/shellprogressbar/raw/master/doc/pbar-windows.gif)
+
+# Install 
+
+Get it on nuget:
+
+http://www.nuget.org/packages/ShellProgressBar/
 
 # Usage 
 
