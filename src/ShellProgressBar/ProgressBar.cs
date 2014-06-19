@@ -8,15 +8,20 @@ namespace ShellProgressBar
         private static readonly object _lock = new object();
 
         private readonly int _maxTicks;
-        private readonly ConsoleColor _color;
-        private readonly DateTime _startDate = DateTime.Now;
+        private ConsoleColor _color;
+        private DateTime _startDate = DateTime.Now;
 
         private int _currentTick = 0;
         private string _message = null;
         private Timer _timer = null;
         private readonly char _progressCharacter;
 
-        public ProgressBar(int maxTicks, string message, ConsoleColor color = ConsoleColor.Green, char progressCharacter = '\u2588')
+        public ProgressBar(
+			int maxTicks, 
+			string message, 
+			ConsoleColor color = ConsoleColor.Green, 
+			char progressCharacter = '\u2588',
+			bool disableTimer = false)
         {
             _progressCharacter = progressCharacter;
             _maxTicks = maxTicks;
@@ -24,32 +29,36 @@ namespace ShellProgressBar
             _color = color;
             Console.WriteLine();
             DisplayProgress();
-            _timer = new Timer((s) => DisplayProgress(), null, 500, 500);
+
+			if (!disableTimer)
+				_timer = new Timer((s) => DisplayProgress(), null, 500, 500);
         }
 
-        public void Tick(string message = "")
+		public void UpdateColor(ConsoleColor color)
+		{
+			_color = color;
+		}
+
+        public void Tick(string message = "", params object[] args)
         {
+			var m = string.Format(message, args);
             Interlocked.Increment(ref _currentTick);
-            if (message != "")
-                Interlocked.Exchange(ref _message, message);
+            if (m != "")
+                Interlocked.Exchange(ref _message, m);
 
             DisplayProgress();
-
         }
 
-        public void Message(string message)
+        public void Message(string message = "", params object[] args)
         {
-            if (message != "")
-                Interlocked.Exchange(ref _message, message);
+			var m = string.Format(message, args);
+            Interlocked.Exchange(ref _message, m);
 
             DisplayProgress();
         }
 
         private void DisplayProgress()
         {
-            if (_timer == null)
-                return;
-
             double percentage = Math.Max(0, Math.Min(100, (100.0 / _maxTicks) * _currentTick));
             var duration = (DateTime.Now - _startDate);
             var durationString = string.Format("{0:00}:{1:00}:{2:00}", duration.Hours, duration.Minutes, duration.Seconds);
@@ -62,11 +71,9 @@ namespace ShellProgressBar
             lock (_lock)
             {
                 RenderConsoleProgress(percentage, _progressCharacter, _color, formatted);
-                if (percentage > 100)
-                {
-                    _timer.Dispose();
-                    _timer = null;
-                }
+	            if (!(percentage > 100) || _timer == null) return;
+	            _timer.Dispose();
+	            _timer = null;
             }
 
         }
