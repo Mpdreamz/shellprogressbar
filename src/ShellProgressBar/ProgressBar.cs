@@ -16,15 +16,17 @@ namespace ShellProgressBar
         private Timer _timer = null;
         private readonly char _progressCharacter;
 
+		public int CurrentTick { get { return Math.Min(_maxTicks, _currentTick); } }
+
         public ProgressBar(int maxTicks, string message, ConsoleColor color = ConsoleColor.Green, char progressCharacter = '\u2588')
         {
             _progressCharacter = progressCharacter;
-            _maxTicks = maxTicks;
+            _maxTicks = Math.Max(0, maxTicks);
             _message = message;
             _color = color;
             Console.WriteLine();
-            DisplayProgress();
             _timer = new Timer((s) => DisplayProgress(), null, 500, 500);
+            DisplayProgress();
         }
 
         public void Tick(string message = "")
@@ -39,23 +41,18 @@ namespace ShellProgressBar
 
         public void Message(string message)
         {
-            if (message != "")
-                Interlocked.Exchange(ref _message, message);
+            if (message != "") Interlocked.Exchange(ref _message, message);
 
             DisplayProgress();
         }
 
         private void DisplayProgress()
         {
-            if (_timer == null)
-                return;
+            if (_timer == null) return;
 
-            double percentage = Math.Max(0, Math.Min(100, (100.0 / _maxTicks) * _currentTick));
+            double percentage = Math.Max(0, Math.Min(100, (100.0 / _maxTicks) * this.CurrentTick));
             // Gracefully handle if the percentage is NaN due to division by 0
-            if (Double.IsNaN(percentage))
-            {
-                percentage = 0;
-            }
+            if (Double.IsNaN(percentage) || percentage < 0) percentage = 100;
             var duration = (DateTime.Now - _startDate);
             var durationString = string.Format("{0:00}:{1:00}:{2:00}", duration.Hours, duration.Minutes, duration.Seconds);
             var column1width = Console.WindowWidth - durationString.Length - 2;
@@ -85,28 +82,27 @@ namespace ShellProgressBar
             Console.Write(message);
         }
 
-        public static void RenderConsoleProgress(double percentage, char progressBarCharacter,
-                                                 ConsoleColor color, string message)
+        public static void RenderConsoleProgress(double percentage, char progressBarCharacter, ConsoleColor color, string message)
         {
             Console.CursorVisible = false;
             ConsoleColor originalColor = Console.ForegroundColor;
             Console.ForegroundColor = color;
             Console.CursorLeft = 0;
+			var currentTop = Console.CursorTop;
+
             int width = Console.WindowWidth - 1;
             int newWidth = (int)((width * percentage) / 100d);
-            string progBar = new string(progressBarCharacter, newWidth) +
-                new string(' ', width - newWidth);
+            string progBar = new string(progressBarCharacter, newWidth) + new string(' ', width - newWidth);
             Console.Write(progBar);
+
             if (string.IsNullOrEmpty(message)) message = "";
-            Console.CursorTop = Math.Min(Console.BufferHeight - 1, Console.CursorTop + 1);
+            //Console.CursorTop = Math.Min(Console.BufferHeight - 1, Console.CursorTop + 1);
+			Console.CursorTop = currentTop + 1;
             OverwriteConsoleMessage(message);
-            Console.CursorTop--;
+			Console.CursorTop = currentTop;
+
             Console.ForegroundColor = originalColor;
             Console.CursorVisible = true;
-            if (percentage >= 100)
-            {
-                Console.Write(Environment.NewLine);
-            }
         }
 
 
@@ -116,6 +112,7 @@ namespace ShellProgressBar
             if (_timer != null)
                 _timer.Dispose();
             _timer = null;
+			Console.WriteLine();
         }
     }
 
