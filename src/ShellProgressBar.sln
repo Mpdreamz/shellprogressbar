@@ -7,6 +7,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShellProgressBar", "ShellPr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShellProgressBar.Example", "ShellProgressBar.Example\ShellProgressBar.Example.csproj", "{25EEC6B1-4113-41F4-8181-674E4855F40A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{DEEB298E-2B68-4DDD-9BBA-8E4BFCB2AA30}"
+	ProjectSection(SolutionItems) = preProject
+		.build\MSBuild.Community.Tasks.dll = .build\MSBuild.Community.Tasks.dll
+		.build\MSBuild.Community.Tasks.targets = .build\MSBuild.Community.Tasks.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{314A5D2B-11E8-4BF3-BB64-B4E15399591C}"
+	ProjectSection(SolutionItems) = preProject
+		..\build.bat = ..\build.bat
+		..\build\Build.proj = ..\build\Build.proj
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

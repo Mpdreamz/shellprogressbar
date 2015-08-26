@@ -147,11 +147,10 @@ $RECYCLE.BIN/
 # Mac crap
 .DS_Store
 
-
+src/packages
 build/tmp
 build/tmp/*
 build/_out/*
-build/keys/private.snk
-build/keys/keypair.snk
+!build/keys
 !build/tools/*
 !build/tools/scriptcs/*

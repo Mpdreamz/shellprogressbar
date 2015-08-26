@@ -1,9 +1,12 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
-	<Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>
 	<PropertyGroup>
 		<SrcDir>$(MSBuildProjectDirectory)\..\src</SrcDir>
 		<SlnDir>$(MSBuildProjectDirectory)\..</SlnDir>
 	</PropertyGroup>
+	<PropertyGroup>
+		<MSBuildCommunityTasksPath>$(SrcDir)\.build</MSBuildCommunityTasksPath>
+	</PropertyGroup>
+	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
 
 	<PropertyGroup>
 		<Version Condition="$(BUILD_NUMBER) != ''">$(BUILD_NUMBER)</Version>
