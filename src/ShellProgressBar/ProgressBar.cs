@@ -51,6 +51,11 @@ namespace ShellProgressBar
                 return;
 
             double percentage = Math.Max(0, Math.Min(100, (100.0 / _maxTicks) * _currentTick));
+            // Gracefully handle if the percentage is NaN due to division by 0
+            if (Double.IsNaN(percentage))
+            {
+                percentage = 0;
+            }
             var duration = (DateTime.Now - _startDate);
             var durationString = string.Format("{0:00}:{1:00}:{2:00}", duration.Hours, duration.Minutes, duration.Seconds);
             var column1width = Console.WindowWidth - durationString.Length - 2;
