@@ -58,14 +58,20 @@ namespace ShellProgressBar.Example
 					Thread.Sleep(50);
 				}
 			}
-			ticks = 200;
-			using (var pbar = new ProgressBar(ticks / 10, "My operation that ticks to often using threads", ConsoleColor.Cyan))
-			{
-				var threads = Enumerable.Range(0, ticks).Select(i => new Thread(() => pbar.Tick("threaded tick " + i))).ToList();
-				foreach (var thread in threads) thread.Start();
-				foreach (var thread in threads) thread.Join();
-			}
+
+            AsyncTest().Wait();
 			Console.ReadLine();
 		}
+
+        static async Task AsyncTest()
+        {
+            await ProgressBar.FromTasks(
+                Enumerable.Range(0, 200).Select(async i =>
+                {
+                    await Task.Delay(i * 10);
+                    return $"threaded tick {i}";
+                }),
+                "My operation that ticks to often using threads");
+        }
 	}
 }
