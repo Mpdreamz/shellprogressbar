@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace ShellProgressBar
 {
-    public class ProgressBar : IDisposable
+    public partial class ProgressBar : IDisposable
     {
         private static readonly object _lock = new object();
 
