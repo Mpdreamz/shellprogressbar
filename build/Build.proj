@@ -52,16 +52,6 @@
 			<Output TaskParameter="Assemblies" ItemName="AsmInfo" />
 		</GetAssemblyIdentity>
 
-		<!-- Create signed copies -->
-		<Exec WorkingDirectory="$(BuildDir)"
-			  Command='$(MSBuildProjectDirectory)\tools\ilmerge.exe $(BuildDir)\lib\NET4\ShellProgressBar.dll /keyfile:$(MSBuildProjectDirectory)\keys\keypair.snk /out:$(BuildDir)\lib\ShellProgressBar.dll /targetplatform:v4,"%ProgramFiles(x86)%\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0"' />
-		<ItemGroup>
-			<TmpSignedBinary Include="$(BuildDir)\lib\ShellProgressBar.*" />
-		</ItemGroup>		
-
-		<Copy SourceFiles="@(TmpSignedBinary)" DestinationFolder="$(BuildDir)\lib\NET4\" />
-		<Delete Files="@(TmpSignedBinary)" />
-
 		<!-- insert the version number into the nuspec files -->
 		<XmlUpdate
 		  Namespace="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"
