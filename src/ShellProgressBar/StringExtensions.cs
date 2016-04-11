@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ShellProgressBar
 {
-    public static class StringExtensions
+    internal static class StringExtensions
     {
         public static string Excerpt(string phrase, int length = 60)
         {

@@ -42,8 +42,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Examples\DeeplyNestedProgressBarTreeExample.cs" />
+    <Compile Include="Examples\DrawsOnlyOnTickExample.cs" />
+    <Compile Include="Examples\LongRunningExample.cs" />
+    <Compile Include="Examples\NegativeMaxTicksExample.cs" />
+    <Compile Include="Examples\NeverCompletesExample.cs" />
+    <Compile Include="Examples\NeverTicksExample.cs" />
+    <Compile Include="Examples\TicksOverflowExample.cs" />
+    <Compile Include="Examples\UpdatesMaxTicksExample.cs" />
+    <Compile Include="Examples\ZeroMaxTicksExample.cs" />
+    <Compile Include="IProgressBarExample.cs" />
+    <Compile Include="Examples\NestedProgressBarPerStepProgress.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Examples\ThreadedTicksOverflowExample.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -54,6 +66,7 @@
       <Name>ShellProgressBar</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
