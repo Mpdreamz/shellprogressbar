@@ -33,7 +33,7 @@
                 
 		  AssemblyVersion="$(Version)"
 		  AssemblyFileVersion="$(Version)"/>
-		<MSBuild Projects="$(SolutionFile)" Properties="Configuration=$(Configuration)"  />
+		<MSBuild Projects="$(SolutionFile)" Properties="Configuration=$(Configuration)"  ToolsVersion="14.0" />
 	</Target>
 
 	<Target Name="NuGetPackage" DependsOnTargets="Compile">
