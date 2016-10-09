@@ -64,28 +64,40 @@ namespace ShellProgressBar
 
 		public void Tick(string message = null)
 		{
-			Interlocked.Increment(ref _currentTick);
-			if (message != null)
-				Interlocked.Exchange(ref _message, message);
-
-			if (_currentTick >= _maxTicks)
-			{
-				this.EndTime = DateTime.Now;
-				this.OnDone();
-			}
-			DisplayProgress();
+            FinishTick(message);
 		}
 
-		public void UpdateMaxTicks(int maxTicks)
+        public void Tick(string message, int prec)
+        {
+            Interlocked.Exchange(ref _currentTick, prec);
+
+            FinishTick(message);
+        }
+
+        public void UpdateMaxTicks(int maxTicks)
 		{
 			Interlocked.Exchange(ref _maxTicks, maxTicks);
 		}
 
 		public void UpdateMessage(string message)
 		{
-			Interlocked.Exchange(ref _message, message);
+            Interlocked.Exchange(ref _message, message);
 
 			DisplayProgress();
 		}
+
+        private void FinishTick(string message)
+        {
+            Interlocked.Increment(ref _currentTick);
+            if (message != null)
+                Interlocked.Exchange(ref _message, message);
+
+            if (_currentTick >= _maxTicks)
+            {
+                this.EndTime = DateTime.Now;
+                this.OnDone();
+            }
+            DisplayProgress();
+        }
 	}
 }
