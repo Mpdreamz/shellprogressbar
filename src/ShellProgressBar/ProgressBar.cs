@@ -155,7 +155,6 @@ namespace ShellProgressBar
 				{
 					Console.CursorLeft = 0;
 					ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
-
 					Console.CursorLeft = 0;
 					ProgressBarTopHalf(mainPercentage, this.Options.ProgressCharacter, this.Options.BackgroundColor, indentation, this.Options.ProgressBarOnBottom);
 
@@ -219,7 +218,7 @@ namespace ShellProgressBar
 				{
 					Console.CursorLeft = 0;
 					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation, child.Options.ProgressBarOnBottom);
-
+					
 					Console.CursorLeft = 0;
 					ProgressBarTopHalf(percentage, child.Options.ProgressCharacter, child.Options.BackgroundColor, childIndentation, child.Options.ProgressBarOnBottom);
 

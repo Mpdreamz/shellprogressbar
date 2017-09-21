@@ -49,15 +49,13 @@ namespace ShellProgressBar.Example
 				await example.Start(token);
 				Console.Clear();
 			}
+			Console.Write("Shown all examples!");
 
 			Console.ReadLine();
 		}
 		public static void BusyWait(int milliseconds)
 		{
-		    var sw = Stopwatch.StartNew();
-
-		    while (sw.ElapsedMilliseconds < milliseconds)
-		        Thread.SpinWait(1000);
+			Thread.Sleep(milliseconds);
 		}
 
 	}

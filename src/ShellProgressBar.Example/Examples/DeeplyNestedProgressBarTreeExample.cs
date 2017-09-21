@@ -25,7 +25,7 @@ namespace ShellProgressBar.Example.Examples
 					ForeGroundColorDone = ConsoleColor.DarkGreen,
 					ProgressCharacter = '─',
 					BackgroundColor = ConsoleColor.DarkGray,
-					CollapseWhenFinished = false,
+					CollapseWhenFinished = true,
 
 				} ;
 				Parallel.For(0, numberOfSteps, (i) =>
