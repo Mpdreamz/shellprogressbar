@@ -17,7 +17,7 @@ namespace ShellProgressBar.Example.Examples
 				BackgroundColor = ConsoleColor.DarkGray,
 			};
 
-			using (var pbar = new ProgressBar(numberOfSteps, "overal progress", overProgressOptions))
+			using (var pbar = new ProgressBar(numberOfSteps, "overall progress", overProgressOptions))
 			{
 				var stepBarOptions = new ProgressBarOptions
 				{
