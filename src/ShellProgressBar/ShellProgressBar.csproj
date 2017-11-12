@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>ShellProgressBar</AssemblyName>
     <RootNamespace>ShellProgressBar</RootNamespace>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFrameworks>netstandard1.3</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup>
       <PackageId>ShellProgressBar</PackageId>

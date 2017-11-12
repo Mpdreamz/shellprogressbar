@@ -28,18 +28,7 @@ namespace ShellProgressBar.Example
 
 		static void Main(string[] args)
 		{
-			try
-			{
-				Console.WindowWidth = Console.LargestWindowWidth / 2;
-				Console.WindowHeight = Console.LargestWindowHeight / 3;
-			}
-			catch
-			{
-				// ignored
-			}
-
 			var cts = new CancellationTokenSource();
-
 			Console.CancelKeyPress += (s, e) =>
 			{
 				e.Cancel = true;

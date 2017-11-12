@@ -9,10 +9,11 @@
     <InformationalVersion>$(CurrentVersion)</InformationalVersion>
     <AssemblyVersion>$(CurrentAssemblyVersion)</AssemblyVersion>
     <FileVersion>$(CurrentAssemblyFileVersion)</FileVersion>
+    <IsPackable>False</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ShellProgressBar\ShellProgressBar.csproj" />
-    <PackageReference Include="System.Threading.Thread" Version="4.0.0" />
-    <PackageReference Include="System.Threading.Tasks.Parallel" Version="4.0.1" />
+    <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
+    <PackageReference Include="System.Threading.Tasks.Parallel" Version="4.3.0" />
   </ItemGroup>
 </Project>
