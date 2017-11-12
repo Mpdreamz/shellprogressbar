@@ -11,7 +11,7 @@ namespace ShellProgressBar.Example.Examples
 			};
 			using (var pbar = new ProgressBar(totalTicks, "only draw progress on tick", options))
 			{
-				TickToCompletion(pbar, totalTicks);
+				TickToCompletion(pbar, totalTicks, sleep: 1750);
 			}
 		}
 	}

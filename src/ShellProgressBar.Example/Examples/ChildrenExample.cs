@@ -10,13 +10,13 @@ namespace ShellProgressBar.Example.Examples
 			var options = new ProgressBarOptions
 			{
 				ForegroundColor = ConsoleColor.Yellow,
-				BackgroundColor = ConsoleColor.DarkYellow,
+				BackgroundColor = ConsoleColor.DarkGray,
 				ProgressCharacter = '─'
 			};
 			var childOptions = new ProgressBarOptions
 			{
 				ForegroundColor = ConsoleColor.Green,
-				BackgroundColor = ConsoleColor.DarkGreen,
+				BackgroundColor = ConsoleColor.DarkGray,
 				ProgressCharacter = '─'
 			};
 			using (var pbar = new ProgressBar(totalTicks, "main progressbar", options))

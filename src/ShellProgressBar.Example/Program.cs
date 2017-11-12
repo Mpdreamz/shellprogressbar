@@ -15,16 +15,16 @@ namespace ShellProgressBar.Example
 		private static readonly IList<IProgressBarExample> TestCases = new List<IProgressBarExample>
 		{
 			new DeeplyNestedProgressBarTreeExample(),
-			new NestedProgressBarPerStepProgress(),
-			new DrawsOnlyOnTickExample(),
-			new ThreadedTicksOverflowExample(),
-			new TicksOverflowExample(),
-			new NegativeMaxTicksExample(),
-			new ZeroMaxTicksExample(),
-			new LongRunningExample(),
-			new NeverCompletesExample(),
-			new UpdatesMaxTicksExample(),
-			new NeverTicksExample(),
+//			new NestedProgressBarPerStepProgress(),
+//			new DrawsOnlyOnTickExample(),
+//			new ThreadedTicksOverflowExample(),
+//			new TicksOverflowExample(),
+//			new NegativeMaxTicksExample(),
+//			new ZeroMaxTicksExample(),
+//			new LongRunningExample(),
+//			new NeverCompletesExample(),
+//			new UpdatesMaxTicksExample(),
+//			new NeverTicksExample(),
 		};
 		private static readonly IList<IProgressBarExample> Examples = new List<IProgressBarExample>
 		{
@@ -69,7 +69,7 @@ namespace ShellProgressBar.Example
 
 		private static async Task RunExample(CancellationToken token, int nth)
 		{
-			if (Examples.Count -1 > nth || nth < 0)
+			if (nth > Examples.Count -1 || nth < 0)
 			{
 				Console.Error.WriteLine($"There are only {Examples.Count} examples, {nth} is not valid");
 			}
