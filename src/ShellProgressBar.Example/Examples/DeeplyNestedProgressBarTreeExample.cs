@@ -21,8 +21,8 @@ namespace ShellProgressBar.Example.Examples
 			{
 				var stepBarOptions = new ProgressBarOptions
 				{
-					ForeGroundColor = ConsoleColor.Cyan,
-					ForeGroundColorDone = ConsoleColor.DarkGreen,
+					ForegroundColor = ConsoleColor.Cyan,
+					ForegroundColorDone = ConsoleColor.DarkGreen,
 					ProgressCharacter = '─',
 					BackgroundColor = ConsoleColor.DarkGray,
 					CollapseWhenFinished = true,
@@ -32,7 +32,7 @@ namespace ShellProgressBar.Example.Examples
 				{
 					var workBarOptions = new ProgressBarOptions
 					{
-						ForeGroundColor = ConsoleColor.Yellow,
+						ForegroundColor = ConsoleColor.Yellow,
 						ProgressCharacter = '─',
 						BackgroundColor = ConsoleColor.DarkGray,
 					};

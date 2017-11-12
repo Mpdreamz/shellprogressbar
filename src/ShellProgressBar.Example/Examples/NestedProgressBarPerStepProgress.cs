@@ -45,7 +45,7 @@ namespace ShellProgressBar.Example.Examples
 
 		private static void InnerInnerProgressBars(ChildProgressBar pbar)
 		{
-			var progressBarOption = new ProgressBarOptions { ForeGroundColor = ConsoleColor.Yellow };
+			var progressBarOption = new ProgressBarOptions { ForegroundColor = ConsoleColor.Yellow };
 			var innerProgressBars = Enumerable.Range(0, new Random().Next(1, 3))
 				.Select(s => pbar.Spawn(new Random().Next(5, 10), $"inner bar {s}", progressBarOption))
 				.ToList();

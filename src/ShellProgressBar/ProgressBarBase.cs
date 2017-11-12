@@ -30,7 +30,7 @@ namespace ShellProgressBar
 		public DateTime? EndTime { get; protected set; }
 
 		public ConsoleColor ForeGroundColor => 
-			EndTime.HasValue ? this.Options.ForeGroundColorDone ?? this.Options.ForeGroundColor : this.Options.ForeGroundColor;
+			EndTime.HasValue ? this.Options.ForegroundColorDone ?? this.Options.ForegroundColor : this.Options.ForegroundColor;
 
 		public int CurrentTick => _currentTick;
 		public int MaxTicks => _maxTicks;

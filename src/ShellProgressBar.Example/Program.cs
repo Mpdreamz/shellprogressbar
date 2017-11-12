@@ -51,10 +51,11 @@ namespace ShellProgressBar.Example
 
 		static async Task MainAsync(string[] args, CancellationToken token)
 		{
+			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 			foreach (var example in ExampleProgressBars)
 			{
+				Console.Clear(); //not necessary but for demo/recording purposes.
 				await example.Start(token);
-				Console.Clear();
 			}
 			Console.Write("Shown all examples!");
 

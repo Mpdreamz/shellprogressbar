@@ -8,9 +8,7 @@ ShellProgressBar - display progress in your console application
 
 # Install 
 
-Get it on nuget:
-
-http://www.nuget.org/packages/ShellProgressBar/
+Get it on nuget: http://www.nuget.org/packages/ShellProgressBar/
 
 # Usage 
 
@@ -30,5 +28,5 @@ using (var pbar = new ProgressBar(maxTicks, "Starting", ConsoleColor.Cyan, '\u25
 
 ### Credits 
 
-The bulk of the code was taken from this article:
+The initial implementation was inspired by this article.
 http://www.bytechaser.com/en/articles/ckcwh8nsyt/display-progress-bar-in-console-application-in-c.aspx
