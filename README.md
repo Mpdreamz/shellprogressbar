@@ -152,7 +152,7 @@ var childOptions = new ProgressBarOptions
 };
 ```
 
-![children_no_collapse](https://github.com/Mpdreamz/shellprogressbar/raw/master/doc/children-no-collapse-osx.gif)
+![children_no_collapse](https://github.com/Mpdreamz/shellprogressbar/raw/master/doc/children-no-collapse-windows.gif)
 
 ### Credits 
 
