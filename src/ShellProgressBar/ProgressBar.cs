@@ -145,8 +145,6 @@ namespace ShellProgressBar
 			var indentation = new[] {new Indentation(this.ForeGroundColor, true)};
 			var mainPercentage = this.Percentage;
 
-			var windowTop = Console.WindowTop;
-
 			lock (Lock)
 			{
 				Console.ForegroundColor = this.ForeGroundColor;
@@ -155,6 +153,8 @@ namespace ShellProgressBar
 				{
 					Console.CursorLeft = 0;
 					ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
+					Console.CursorTop = Console.CursorTop + 1;
+					
 					Console.CursorLeft = 0;
 					ProgressBarTopHalf(mainPercentage, this.Options.ProgressCharacter, this.Options.BackgroundColor, indentation, this.Options.ProgressBarOnBottom);
 
@@ -163,6 +163,7 @@ namespace ShellProgressBar
 				{
 					Console.CursorLeft = 0;
 					ProgressBarTopHalf(mainPercentage, this.Options.ProgressCharacter, this.Options.BackgroundColor, indentation, this.Options.ProgressBarOnBottom);
+					Console.CursorTop = Console.CursorTop + 1;
 
 					Console.CursorLeft = 0;
 					ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
@@ -173,7 +174,6 @@ namespace ShellProgressBar
 				ResetToBottom();
 
 				Console.CursorLeft = 0;
-				Console.WindowTop = _originalWindowTop;
 				Console.CursorTop = _originalCursorTop;
 				Console.ForegroundColor = _originalColor;
 
@@ -213,11 +213,13 @@ namespace ShellProgressBar
 
 				var percentage = child.Percentage;
 				Console.ForegroundColor = child.ForeGroundColor;
-
+				
+				Console.CursorTop = Console.CursorTop + 1;
 				if (child.Options.ProgressBarOnBottom)
 				{
 					Console.CursorLeft = 0;
 					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation, child.Options.ProgressBarOnBottom);
+					Console.CursorTop = Console.CursorTop + 1;
 					
 					Console.CursorLeft = 0;
 					ProgressBarTopHalf(percentage, child.Options.ProgressCharacter, child.Options.BackgroundColor, childIndentation, child.Options.ProgressBarOnBottom);
@@ -228,6 +230,7 @@ namespace ShellProgressBar
 
 					Console.CursorLeft = 0;
 					ProgressBarTopHalf(percentage, child.Options.ProgressCharacter, child.Options.BackgroundColor, childIndentation, child.Options.ProgressBarOnBottom);
+					Console.CursorTop = Console.CursorTop + 1;
 
 					Console.CursorLeft = 0;
 					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation, child.Options.ProgressBarOnBottom);

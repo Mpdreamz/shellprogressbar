@@ -15,21 +15,28 @@ namespace ShellProgressBar.Example
 		{
 			new DeeplyNestedProgressBarTreeExample(),
 			new NestedProgressBarPerStepProgress(),
-			new DrawsOnlyOnTickExample(),
-			new ThreadedTicksOverflowExample(),
-			new TicksOverflowExample(),
-			new NegativeMaxTicksExample(),
-			new ZeroMaxTicksExample(),
-			new LongRunningExample(),
-			new NeverCompletesExample(),
-			new UpdatesMaxTicksExample(),
-			new NeverTicksExample(),
+//			new DrawsOnlyOnTickExample(),
+//			new ThreadedTicksOverflowExample(),
+//			new TicksOverflowExample(),
+//			new NegativeMaxTicksExample(),
+//			new ZeroMaxTicksExample(),
+//			new LongRunningExample(),
+//			new NeverCompletesExample(),
+//			new UpdatesMaxTicksExample(),
+//			new NeverTicksExample(),
 		};
 
 		static void Main(string[] args)
 		{
-			Console.WindowWidth = Console.LargestWindowWidth / 2;
-			Console.WindowHeight = Console.LargestWindowHeight / 3;
+			try
+			{
+				Console.WindowWidth = Console.LargestWindowWidth / 2;
+				Console.WindowHeight = Console.LargestWindowHeight / 3;
+			}
+			catch
+			{
+				// ignored
+			}
 
 			var cts = new CancellationTokenSource();
 
