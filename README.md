@@ -1,17 +1,22 @@
 ShellProgressBar
 ===================
-ShellProgressBar - display progress in your console application
+visualize (concurrent) progress in your console application
 
-# Example
+This is a great little library to visualize long running command line tasks.
 
-This package is a great little library to visualize long running tasks.
+.NET Core ready!
 
-It also supports spawning child progress bars which allows you to visualize
-dependencies and concurrency in long running jobs rather nicely.
+It also supports spawning child progress bars which allows you to visualize dependencies and concurrency rather nicely.
 
-Tested on OSX and Windows.
+Tested on OSX 
 
-![example](https://github.com/Mpdreamz/shellprogressbar/raw/master/doc/pbar-osx.gif)
+![example osx](https://github.com/Mpdreamz/shellprogressbar/raw/master/doc/pbar-osx.gif)
+
+and Windows 
+
+![example win cmd](https://github.com/Mpdreamz/shellprogressbar/raw/master/doc/pbar-windows.gif)
+
+(Powershell works too, see example further down)
 
 # Install 
 
@@ -59,21 +64,21 @@ This can be flipped around if so desired.
 const int totalTicks = 10;
 var options = new ProgressBarOptions
 {
-  ForegroundColor = ConsoleColor.Yellow,
+	ForegroundColor = ConsoleColor.Yellow,
 	ForegroundColorDone = ConsoleColor.DarkGreen,
 	BackgroundColor = ConsoleColor.DarkGray,
 	BackgroundCharacter = '\u2593'
 };
 using (var pbar = new ProgressBar(totalTicks, "showing off styling", options))
 {
-  TickToCompletion(pbar, totalTicks, sleep: 500);
+	TickToCompletion(pbar, totalTicks, sleep: 500);
 }
 ```
 
 Many aspects can be styled including foreground color, background (inactive portion)
 and changing the color on completion.
 
-![styling](https://github.com/Mpdreamz/shellprogressbar/raw/master/doc/styling-osx.gif)
+![styling](https://github.com/Mpdreamz/shellprogressbar/raw/master/doc/styling-windows.gif)
 
 
 ### No real time update
