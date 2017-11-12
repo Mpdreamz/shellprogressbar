@@ -18,7 +18,7 @@ namespace ShellProgressBar.Example.TestCases
 					if (i == 5)
 					{
 						ticks = 120;
-						pbar.UpdateMaxTicks(ticks);
+						pbar.MaxTicks = ticks;
 						sleep = 50;
 					}
 					Thread.Sleep(sleep);

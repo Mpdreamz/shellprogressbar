@@ -9,7 +9,7 @@ namespace ShellProgressBar.Example.Examples
             {
                 DisplayTimeInRealTime = false
             };
-            using (var pbar = new ProgressBar(totalTicks, "only update time on ticks", options))
+            using (var pbar = new ProgressBar(totalTicks, "only draw progress on tick", options))
             {
                 TickToCompletion(pbar, totalTicks);
             }

@@ -35,6 +35,7 @@ namespace ShellProgressBar
 
 		/// <summary>
 		/// Collapse the progressbar when done, very useful for child progressbars
+		/// Defaults to true
 		/// </summary>
 		public bool CollapseWhenFinished { get; set; } = true;
 

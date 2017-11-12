@@ -2,7 +2,7 @@ using System;
 
 namespace ShellProgressBar.Example.Examples
 {
-	public class ChildrenExample : ExampleBase
+	public class ChildrenNoCollapseExample : ExampleBase
 	{
 		protected override void Start()
 		{
@@ -17,7 +17,8 @@ namespace ShellProgressBar.Example.Examples
 			{
 				ForegroundColor = ConsoleColor.Green,
 				BackgroundColor = ConsoleColor.DarkGreen,
-				ProgressCharacter = '─'
+				ProgressCharacter = '─',
+				CollapseWhenFinished = false
 			};
 			using (var pbar = new ProgressBar(totalTicks, "main progressbar", options))
 			{

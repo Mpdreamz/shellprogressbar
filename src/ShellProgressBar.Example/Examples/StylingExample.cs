@@ -14,7 +14,7 @@ namespace ShellProgressBar.Example.Examples
 	            BackgroundColor = ConsoleColor.DarkGray,
 	            BackgroundCharacter = '\u2593'
             };
-            using (var pbar = new ProgressBar(totalTicks, "color changes when done", options))
+            using (var pbar = new ProgressBar(totalTicks, "showing off styling", options))
             {
                 TickToCompletion(pbar, totalTicks, sleep: 500);
             }

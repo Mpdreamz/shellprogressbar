@@ -10,12 +10,13 @@ namespace ShellProgressBar.Example.Examples
 
 		protected void TickToCompletion(IProgressBar pbar, int ticks, int sleep = 1750, Action childAction = null)
 		{
+			var initialMessage = pbar.Message;
 			for (var i = 0; i < ticks && !RequestToQuit; i++)
 			{
-				pbar.UpdateMessage($"Start work item {i + 1} of {ticks}");
+				pbar.Message = $"Start {i + 1} of {ticks}: {initialMessage}";
 				childAction?.Invoke();
 				Thread.Sleep(sleep);
-				pbar.Tick($"Done work item {i + 1} of {ticks}");
+				pbar.Tick($"End {i + 1} of {ticks}: {initialMessage}");
 			}
 		}
 

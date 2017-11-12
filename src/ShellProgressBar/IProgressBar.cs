@@ -8,14 +8,12 @@ namespace ShellProgressBar
 
 		void Tick(string message = "");
 
+		int MaxTicks { get; set; }
+		string Message { get; set; }
+
 		double Percentage { get; }
 		int CurrentTick { get; }
-		int MaxTicks { get; }
 
 		ConsoleColor ForeGroundColor { get; }
-
-		void UpdateMaxTicks(int maxTicks);
-
-		void UpdateMessage(string message);
 	}
 }

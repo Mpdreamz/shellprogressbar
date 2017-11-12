@@ -15,14 +15,6 @@ Get it on nuget: http://www.nuget.org/packages/ShellProgressBar/
 Usage is really straightforward
 
 ```
-var maxTicks = 9000;
-using (var pbar = new ProgressBar(maxTicks, "Starting", ConsoleColor.Cyan, '\u2593'))
-{
-	for (var i = 0; i<maxTicks; i++)
-	{
-		pbar.Tick("Currently processing " + i);
-	}
-}
 ```
 
 

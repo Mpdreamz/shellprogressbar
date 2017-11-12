@@ -11,7 +11,7 @@ namespace ShellProgressBar
 		{
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 		}
-			
+
 		protected readonly DateTime _startDate = DateTime.Now;
 		private int _maxTicks;
 		private int _currentTick;
@@ -27,14 +27,42 @@ namespace ShellProgressBar
 		internal ProgressBarOptions Options { get; }
 		internal ConcurrentBag<ChildProgressBar> Children { get; } = new ConcurrentBag<ChildProgressBar>();
 
+		protected abstract void DisplayProgress();
+
+		protected virtual void Grow(ProgressBarHeight direction)
+		{
+		}
+
+		protected virtual void OnDone()
+		{
+		}
+
 		public DateTime? EndTime { get; protected set; }
 
-		public ConsoleColor ForeGroundColor => 
+		public ConsoleColor ForeGroundColor =>
 			EndTime.HasValue ? this.Options.ForegroundColorDone ?? this.Options.ForegroundColor : this.Options.ForegroundColor;
 
 		public int CurrentTick => _currentTick;
-		public int MaxTicks => _maxTicks;
-		public string Message => _message;
+
+		public int MaxTicks
+		{
+			get => _maxTicks;
+			set
+			{
+				Interlocked.Exchange(ref _maxTicks, value);
+				DisplayProgress();
+			}
+		}
+
+		public string Message
+		{
+			get => _message;
+			set
+			{
+				Interlocked.Exchange(ref _message, value);
+				DisplayProgress();
+			}
+		}
 
 		public double Percentage
 		{
@@ -49,8 +77,6 @@ namespace ShellProgressBar
 
 		public bool Collapse => this.EndTime.HasValue && this.Options.CollapseWhenFinished;
 
-		protected abstract void DisplayProgress();
-
 		public ChildProgressBar Spawn(int maxTicks, string message, ProgressBarOptions options = null)
 		{
 			var pbar = new ChildProgressBar(maxTicks, message, DisplayProgress, options, this.Grow);
@@ -59,51 +85,30 @@ namespace ShellProgressBar
 			return pbar;
 		}
 
-		protected virtual void Grow(ProgressBarHeight direction)
-		{
-
-		}
-		protected virtual void OnDone()
-		{
-
-		}
-
 		public void Tick(string message = null)
 		{
-            FinishTick(message);
+			FinishTick(message);
 		}
 
-        public void Tick(string message, int prec)
-        {
-            Interlocked.Exchange(ref _currentTick, prec);
-
-            FinishTick(message);
-        }
-
-        public void UpdateMaxTicks(int maxTicks)
+		public void Tick(int newTickCount, string message = null)
 		{
-			Interlocked.Exchange(ref _maxTicks, maxTicks);
+			Interlocked.Exchange(ref _currentTick, newTickCount);
+
+			FinishTick(message);
 		}
 
-		public void UpdateMessage(string message)
+		private void FinishTick(string message)
 		{
-            Interlocked.Exchange(ref _message, message);
+			Interlocked.Increment(ref _currentTick);
+			if (message != null)
+				Interlocked.Exchange(ref _message, message);
 
+			if (_currentTick >= _maxTicks)
+			{
+				this.EndTime = DateTime.Now;
+				this.OnDone();
+			}
 			DisplayProgress();
 		}
-
-        private void FinishTick(string message)
-        {
-            Interlocked.Increment(ref _currentTick);
-            if (message != null)
-                Interlocked.Exchange(ref _message, message);
-
-            if (_currentTick >= _maxTicks)
-            {
-                this.EndTime = DateTime.Now;
-                this.OnDone();
-            }
-            DisplayProgress();
-        }
 	}
 }

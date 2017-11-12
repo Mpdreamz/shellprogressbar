@@ -12,7 +12,7 @@ namespace ShellProgressBar.Example.Examples
 				ProgressCharacter = '─',
 	            ProgressBarOnBottom = true
             };
-            using (var pbar = new ProgressBar(totalTicks, "color changes when done", options))
+            using (var pbar = new ProgressBar(totalTicks, "progress bar is on the bottom now", options))
             {
                 TickToCompletion(pbar, totalTicks, sleep: 500);
             }
