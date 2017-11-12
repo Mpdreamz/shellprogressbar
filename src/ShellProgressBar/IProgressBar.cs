@@ -13,5 +13,9 @@ namespace ShellProgressBar
 		int MaxTicks { get; }
 
 		ConsoleColor ForeGroundColor { get; }
+
+		void UpdateMaxTicks(int maxTicks);
+
+		void UpdateMessage(string message);
 	}
 }

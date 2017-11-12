@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ShellProgressBar.Example.Examples
+namespace ShellProgressBar.Example.TestCases
 {
 	public class DeeplyNestedProgressBarTreeExample : IProgressBarExample
 	{
