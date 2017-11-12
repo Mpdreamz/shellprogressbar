@@ -26,8 +26,7 @@ namespace ShellProgressBar.Example.TestCases
 					ProgressCharacter = '─',
 					BackgroundColor = ConsoleColor.DarkGray,
 					CollapseWhenFinished = true,
-
-				} ;
+				};
 				Parallel.For(0, numberOfSteps, (i) =>
 				{
 					var workBarOptions = new ProgressBarOptions
@@ -51,7 +50,7 @@ namespace ShellProgressBar.Example.TestCases
 							}
 							childProgress.Tick();
 						});
-					
+
 					pbar.Tick();
 				});
 			}

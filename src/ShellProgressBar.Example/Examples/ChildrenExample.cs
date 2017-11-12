@@ -23,10 +23,10 @@ namespace ShellProgressBar.Example.Examples
 			{
 				TickToCompletion(pbar, totalTicks, sleep: 10, childAction: () =>
 				{
-                    using (var child = pbar.Spawn(totalTicks, "child actions", childOptions))
-                    {
-                        TickToCompletion(child, totalTicks, sleep: 100);
-                    }
+					using (var child = pbar.Spawn(totalTicks, "child actions", childOptions))
+					{
+						TickToCompletion(child, totalTicks, sleep: 100);
+					}
 				});
 			}
 		}
