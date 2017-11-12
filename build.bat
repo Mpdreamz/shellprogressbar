@@ -1,2 +1,11 @@
-"C:\Program Files (x86)\MSBuild\14.0\Bin\MsBuild.exe" ^
-  build\Build.proj /p:NuspecFile=build\ShellProgressBar.nuspec;BUILD_NUMBER=%1 /t:NugetPackage
+@ECHO OFF
+
+pushd src
+
+dotnet restore
+
+IF "%~1"=="" ( dotnet build )
+IF NOT "%~1"=="" ( dotnet pack -c Release /p:Version=%1 )
+
+popd 
+

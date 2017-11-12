@@ -1,0 +1,21 @@
+root=true
+
+[*.cs]
+trim_trailing_whitespace=true
+insert_final_newline=true
+
+[*]
+indent_style = tab
+indent_size = 4
+
+[*.cshtml]
+indent_style = tab
+indent_size = 4
+
+[*.{fs,fsx}]
+indent_style = space
+indent_size = 4
+
+[*.{md,markdown,json,js,csproj,fsproj,targets}]
+indent_style = space
+indent_size = 2

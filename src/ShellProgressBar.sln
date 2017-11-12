@@ -16,9 +16,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{314A5D2B-11E8-4BF3-BB64-B4E15399591C}"
 	ProjectSection(SolutionItems) = preProject
 		..\build.bat = ..\build.bat
-		..\build\Build.proj = ..\build\Build.proj
 		..\README.md = ..\README.md
-		..\build\ShellProgressBar.nuspec = ..\build\ShellProgressBar.nuspec
 	EndProjectSection
 EndProject
 Global

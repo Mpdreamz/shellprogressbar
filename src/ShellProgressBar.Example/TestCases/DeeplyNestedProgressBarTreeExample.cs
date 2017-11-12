@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ShellProgressBar.Example.Examples
+namespace ShellProgressBar.Example.TestCases
 {
 	public class DeeplyNestedProgressBarTreeExample : IProgressBarExample
 	{
@@ -21,18 +21,17 @@ namespace ShellProgressBar.Example.Examples
 			{
 				var stepBarOptions = new ProgressBarOptions
 				{
-					ForeGroundColor = ConsoleColor.Cyan,
-					ForeGroundColorDone = ConsoleColor.DarkGreen,
+					ForegroundColor = ConsoleColor.Cyan,
+					ForegroundColorDone = ConsoleColor.DarkGreen,
 					ProgressCharacter = '─',
 					BackgroundColor = ConsoleColor.DarkGray,
-					CollapseWhenFinished = false,
-
-				} ;
+					CollapseWhenFinished = true,
+				};
 				Parallel.For(0, numberOfSteps, (i) =>
 				{
 					var workBarOptions = new ProgressBarOptions
 					{
-						ForeGroundColor = ConsoleColor.Yellow,
+						ForegroundColor = ConsoleColor.Yellow,
 						ProgressCharacter = '─',
 						BackgroundColor = ConsoleColor.DarkGray,
 					};
@@ -51,7 +50,7 @@ namespace ShellProgressBar.Example.Examples
 							}
 							childProgress.Tick();
 						});
-					
+
 					pbar.Tick();
 				});
 			}

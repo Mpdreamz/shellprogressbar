@@ -2,14 +2,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ShellProgressBar.Example.Examples
+namespace ShellProgressBar.Example.TestCases
 {
-	public class ZeroMaxTicksExample : IProgressBarExample
+	public class LongRunningExample : IProgressBarExample
 	{
 		public Task Start(CancellationToken token)
 		{
-			var ticks = 0;
-			using (var pbar = new ProgressBar(ticks, "my operation with zero ticks", ConsoleColor.Cyan))
+			var ticks = 100;
+			using (var pbar = new ProgressBar(ticks, "my long running operation", ConsoleColor.Green))
 			{
 				for (var i = 0; i < ticks; i++)
 				{

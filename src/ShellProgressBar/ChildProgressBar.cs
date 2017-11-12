@@ -39,7 +39,6 @@ namespace ShellProgressBar
 
 				_calledDone = true;
 			}
-
 		}
 
 		public void Dispose()

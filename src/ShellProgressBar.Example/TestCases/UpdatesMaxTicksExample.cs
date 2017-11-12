@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ShellProgressBar.Example.Examples
+namespace ShellProgressBar.Example.TestCases
 {
 	public class UpdatesMaxTicksExample : IProgressBarExample
 	{
@@ -18,7 +18,7 @@ namespace ShellProgressBar.Example.Examples
 					if (i == 5)
 					{
 						ticks = 120;
-						pbar.UpdateMaxTicks(ticks);
+						pbar.MaxTicks = ticks;
 						sleep = 50;
 					}
 					Thread.Sleep(sleep);
