@@ -2,13 +2,15 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace ShellProgressBar
 {
-	public class ProgressBar : ProgressBarBase, IDisposable, IProgressBar
+	public class ProgressBar : ProgressBarBase, IProgressBar
     {
         private static readonly object Lock = new object();
+	    private static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
 		private readonly ConsoleColor _originalColor;
 	    private readonly int _originalCursorTop;
@@ -142,6 +144,7 @@ namespace ShellProgressBar
 		{
 			if (_isDisposed) return;
 
+			Console.CursorVisible = false;
 			var indentation = new[] {new Indentation(this.ForeGroundColor, true)};
 			var mainPercentage = this.Percentage;
 
@@ -153,7 +156,8 @@ namespace ShellProgressBar
 				{
 					Console.CursorLeft = 0;
 					ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
-					Console.CursorTop = Console.CursorTop + 1;
+					
+					if (!IsWindows) Console.CursorTop = Console.CursorTop + 1;
 					
 					Console.CursorLeft = 0;
 					ProgressBarTopHalf(mainPercentage, this.Options.ProgressCharacter, this.Options.BackgroundColor, indentation, this.Options.ProgressBarOnBottom);
@@ -163,7 +167,7 @@ namespace ShellProgressBar
 				{
 					Console.CursorLeft = 0;
 					ProgressBarTopHalf(mainPercentage, this.Options.ProgressCharacter, this.Options.BackgroundColor, indentation, this.Options.ProgressBarOnBottom);
-					Console.CursorTop = Console.CursorTop + 1;
+					if (!IsWindows) Console.CursorTop = Console.CursorTop + 1;
 
 					Console.CursorLeft = 0;
 					ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
@@ -177,11 +181,9 @@ namespace ShellProgressBar
 				Console.CursorTop = _originalCursorTop;
 				Console.ForegroundColor = _originalColor;
 
-				if (mainPercentage >= 100)
-				{
-					_timer?.Dispose();
-					_timer = null;
-				}
+				if (!(mainPercentage >= 100)) return;
+				_timer?.Dispose();
+				_timer = null;
 			}
 		}
 
@@ -204,6 +206,7 @@ namespace ShellProgressBar
 			var lastChild = view.Max(t => t.i);
 			foreach (var tuple in view)
 			{
+				//Dont bother drawing children that would fall off the screen
 				if (Console.CursorTop >= (Console.WindowHeight - 2))
 					return;
 
@@ -214,12 +217,12 @@ namespace ShellProgressBar
 				var percentage = child.Percentage;
 				Console.ForegroundColor = child.ForeGroundColor;
 				
-				Console.CursorTop = Console.CursorTop + 1;
+				if (!IsWindows) Console.CursorTop = Console.CursorTop + 1;
 				if (child.Options.ProgressBarOnBottom)
 				{
 					Console.CursorLeft = 0;
 					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation, child.Options.ProgressBarOnBottom);
-					Console.CursorTop = Console.CursorTop + 1;
+					if (!IsWindows) Console.CursorTop = Console.CursorTop + 1;
 					
 					Console.CursorLeft = 0;
 					ProgressBarTopHalf(percentage, child.Options.ProgressCharacter, child.Options.BackgroundColor, childIndentation, child.Options.ProgressBarOnBottom);
@@ -230,7 +233,7 @@ namespace ShellProgressBar
 
 					Console.CursorLeft = 0;
 					ProgressBarTopHalf(percentage, child.Options.ProgressCharacter, child.Options.BackgroundColor, childIndentation, child.Options.ProgressBarOnBottom);
-					Console.CursorTop = Console.CursorTop + 1;
+					if (!IsWindows) Console.CursorTop = Console.CursorTop + 1;
 
 					Console.CursorLeft = 0;
 					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation, child.Options.ProgressBarOnBottom);
