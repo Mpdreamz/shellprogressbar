@@ -155,3 +155,5 @@ build/_out/*
 !build/keys
 !build/tools/*
 !build/tools/scriptcs/*
+
+.vs
