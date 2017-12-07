@@ -15,6 +15,7 @@ namespace ShellProgressBar.Example.TestCases
 			var overProgressOptions = new ProgressBarOptions
 			{
 				BackgroundColor = ConsoleColor.DarkGray,
+				EnableTaskBarProgress = true,
 			};
 
 			using (var pbar = new ProgressBar(numberOfSteps, "overall progress", overProgressOptions))
