@@ -35,6 +35,9 @@ namespace ShellProgressBar
 
 			Console.CursorVisible = false;
 
+			if (this.Options.EnableTaskBarProgress)
+				TaskbarProgress.SetState(TaskbarProgress.TaskbarStates.Normal);
+
 			if (this.Options.DisplayTimeInRealTime)
 				_timer = new Timer((s) => DisplayProgress(), null, 500, 500);
 			else //draw once
@@ -196,6 +199,9 @@ namespace ShellProgressBar
 					ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
 				}
 
+				if (this.Options.EnableTaskBarProgress)
+					TaskbarProgress.SetValue(mainPercentage, 100);
+
 				DrawChildren(this.Children, indentation);
 
 				ResetToBottom();
@@ -284,6 +290,9 @@ namespace ShellProgressBar
 		{
 			if (this.EndTime == null) this.EndTime = DateTime.Now;
 			var openDescendantsPadding = (_visisbleDescendants * 2);
+
+			if (this.Options.EnableTaskBarProgress)
+				TaskbarProgress.SetState(TaskbarProgress.TaskbarStates.NoProgress);
 
 			try
 			{

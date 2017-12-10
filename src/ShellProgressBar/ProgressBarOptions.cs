@@ -44,5 +44,13 @@ namespace ShellProgressBar
 		/// This setting swaps their position
 		/// </summary>
 		public bool ProgressBarOnBottom { get; set; }
+
+		/// <summary>
+		/// Use Windows' task bar to display progress.
+		/// </summary>
+		/// <remarks>
+		/// This feature is available on the Windows platform.
+		/// </remarks>
+		public bool EnableTaskBarProgress { get; set; }
 	}
 }
