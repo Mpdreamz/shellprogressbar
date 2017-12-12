@@ -28,6 +28,11 @@ Usage is really straightforward
 
 ```csharp
 const int totalTicks = 10;
+var options = new ProgressBarOptions
+{
+    ProgressCharacter = '─',
+    ProgressBarOnBottom = true
+};
 using (var pbar = new ProgressBar(totalTicks, "Initial message", options))
 {
     pbar.Tick(); //will advance pbar to 1 out of 10.
