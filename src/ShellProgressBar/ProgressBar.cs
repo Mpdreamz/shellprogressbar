@@ -19,7 +19,7 @@ namespace ShellProgressBar
 
 		private Timer _timer;
 
-		private int _visisbleDescendants = 0;
+		private int _visibleDescendants = 0;
 
 		public ProgressBar(int maxTicks, string message, ConsoleColor color)
 			: this(maxTicks, message, new ProgressBarOptions {ForegroundColor = color})
@@ -53,10 +53,10 @@ namespace ShellProgressBar
 			switch (direction)
 			{
 				case ProgressBarHeight.Increment:
-					Interlocked.Increment(ref _visisbleDescendants);
+					Interlocked.Increment(ref _visibleDescendants);
 					break;
 				case ProgressBarHeight.Decrement:
-					Interlocked.Decrement(ref _visisbleDescendants);
+					Interlocked.Decrement(ref _visibleDescendants);
 					break;
 			}
 		}
@@ -289,7 +289,7 @@ namespace ShellProgressBar
 		public void Dispose()
 		{
 			if (this.EndTime == null) this.EndTime = DateTime.Now;
-			var openDescendantsPadding = (_visisbleDescendants * 2);
+			var openDescendantsPadding = (_visibleDescendants * 2);
 
 			if (this.Options.EnableTaskBarProgress)
 				TaskbarProgress.SetState(TaskbarProgress.TaskbarStates.NoProgress);
