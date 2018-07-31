@@ -15,7 +15,7 @@ namespace ShellProgressBar
 		private readonly ConsoleColor _originalColor;
 		private readonly int _originalCursorTop;
 		private readonly int _originalWindowTop;
-		private bool _isDisposed;
+		private int _isDisposed;
 
 		private Timer _timer;
 
@@ -158,7 +158,7 @@ namespace ShellProgressBar
 
 		protected override void DisplayProgress()
 		{
-			if (_isDisposed) return;
+			if (_isDisposed != 0) return;
 
 			Console.CursorVisible = false;
 			var indentation = new[] {new Indentation(this.ForeGroundColor, true)};
@@ -288,6 +288,9 @@ namespace ShellProgressBar
 
 		public void Dispose()
 		{
+			if (Interlocked.CompareExchange(ref _isDisposed, 1, 0) != 0)
+				return;
+
 			if (this.EndTime == null) this.EndTime = DateTime.Now;
 			var openDescendantsPadding = (_visibleDescendants * 2);
 
@@ -314,7 +317,6 @@ namespace ShellProgressBar
 			{
 			}
 			Console.WriteLine();
-			_isDisposed = true;
 			_timer?.Dispose();
 			_timer = null;
 			foreach (var c in this.Children) c.Dispose();
