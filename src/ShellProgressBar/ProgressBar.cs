@@ -4,21 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ShellProgressBar
 {
 	public class ProgressBar : ProgressBarBase, IProgressBar
 	{
-		private static readonly object Lock = new object();
-
 		private readonly ConsoleColor _originalColor;
 		private readonly int _originalCursorTop;
 		private readonly int _originalWindowTop;
-		private bool _isDisposed;
+		private int _isDisposed;
 
 		private Timer _timer;
 
-		private int _visisbleDescendants = 0;
+		private int _visibleDescendants = 0;
+		private AutoResetEvent _displayProgressEvent;
+		private Task _displayProgress;
 
 		public ProgressBar(int maxTicks, string message, ConsoleColor color)
 			: this(maxTicks, message, new ProgressBarOptions {ForegroundColor = color})
@@ -45,6 +46,24 @@ namespace ShellProgressBar
 					_timer.Dispose();
 					DisplayProgress();
 				}, null, 0, 1000);
+
+			_displayProgressEvent = new AutoResetEvent(false);
+			_displayProgress = Task.Run(() =>
+				{
+					while (_isDisposed == 0)
+					{
+						_displayProgressEvent.WaitOne();
+
+						try
+						{
+							UpdateProgress();
+						}
+						catch
+						{
+							// don't want to crash background thread
+						}
+					}
+				});
 		}
 
 		protected override void Grow(ProgressBarHeight direction)
@@ -52,10 +71,10 @@ namespace ShellProgressBar
 			switch (direction)
 			{
 				case ProgressBarHeight.Increment:
-					Interlocked.Increment(ref _visisbleDescendants);
+					Interlocked.Increment(ref _visibleDescendants);
 					break;
 				case ProgressBarHeight.Decrement:
-					Interlocked.Decrement(ref _visisbleDescendants);
+					Interlocked.Decrement(ref _visibleDescendants);
 					break;
 			}
 		}
@@ -155,55 +174,55 @@ namespace ShellProgressBar
 
 		protected override void DisplayProgress()
 		{
-			if (_isDisposed) return;
+			_displayProgressEvent.Set();
+		}
 
+		private void UpdateProgress()
+		{
 			Console.CursorVisible = false;
 			var indentation = new[] {new Indentation(this.ForeGroundColor, true)};
 			var mainPercentage = this.Percentage;
 			var cursorTop = _originalCursorTop;
 
-			lock (Lock)
+			Console.ForegroundColor = this.ForeGroundColor;
+
+			void TopHalf()
 			{
-				Console.ForegroundColor = this.ForeGroundColor;
-
-				void TopHalf()
-				{
-					ProgressBarTopHalf(mainPercentage,
-						this.Options.ProgressCharacter,
-						this.Options.BackgroundCharacter,
-						this.Options.BackgroundColor,
-						indentation,
-						this.Options.ProgressBarOnBottom
-					);
-				}
-
-				if (this.Options.ProgressBarOnBottom)
-				{
-					ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
-					Console.SetCursorPosition(0, ++cursorTop);
-					TopHalf();
-				}
-				else
-				{
-					TopHalf();
-					Console.SetCursorPosition(0, ++cursorTop);
-					ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
-				}
-
-				if (this.Options.EnableTaskBarProgress)
-					TaskbarProgress.SetValue(mainPercentage, 100);
-
-				DrawChildren(this.Children, indentation, ref cursorTop);
-
-				ResetToBottom(ref cursorTop);
-
-				Console.SetCursorPosition(0, _originalCursorTop);
-				Console.ForegroundColor = _originalColor;
-
-				if (!(mainPercentage >= 100)) return;
-				_timer?.Dispose();
-				_timer = null;
+				ProgressBarTopHalf(mainPercentage,
+					this.Options.ProgressCharacter,
+					this.Options.BackgroundCharacter,
+					this.Options.BackgroundColor,
+					indentation,
+					this.Options.ProgressBarOnBottom
+				);
 			}
+
+			if (this.Options.ProgressBarOnBottom)
+			{
+				ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
+				Console.SetCursorPosition(0, ++cursorTop);
+				TopHalf();
+			}
+			else
+			{
+				TopHalf();
+				Console.SetCursorPosition(0, ++cursorTop);
+				ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
+			}
+
+			if (this.Options.EnableTaskBarProgress)
+				TaskbarProgress.SetValue(mainPercentage, 100);
+
+			DrawChildren(this.Children, indentation, ref cursorTop);
+
+			ResetToBottom(ref cursorTop);
+
+			Console.SetCursorPosition(0, _originalCursorTop);
+			Console.ForegroundColor = _originalColor;
+
+			if (!(mainPercentage >= 100)) return;
+			_timer?.Dispose();
+			_timer = null;
 		}
 
 		private static void ResetToBottom(ref int cursorTop)
@@ -276,8 +295,21 @@ namespace ShellProgressBar
 
 		public void Dispose()
 		{
+			if (Interlocked.CompareExchange(ref _isDisposed, 1, 0) != 0)
+				return;
+
+			// make sure background task is stopped before we clean up
+			_displayProgressEvent.Set();
+			_displayProgress.Wait();
+
+			// update one last time - needed because background task might have
+			// been already in progress before Dispose was called and it might
+			// have been running for a very long time due to poor performance
+			// of System.Console
+			UpdateProgress();
+
 			if (this.EndTime == null) this.EndTime = DateTime.Now;
-			var openDescendantsPadding = (_visisbleDescendants * 2);
+			var openDescendantsPadding = (_visibleDescendants * 2);
 
 			if (this.Options.EnableTaskBarProgress)
 				TaskbarProgress.SetState(TaskbarProgress.TaskbarStates.NoProgress);
@@ -301,7 +333,6 @@ namespace ShellProgressBar
 			{
 			}
 			Console.WriteLine();
-			_isDisposed = true;
 			_timer?.Dispose();
 			_timer = null;
 			foreach (var c in this.Children) c.Dispose();
