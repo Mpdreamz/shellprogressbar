@@ -2,7 +2,7 @@
   <!--<Import Project="..\..\build\Versioning.targets" />-->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>ShellProgressBar.Example</AssemblyName>
     <RootNamespace>ShellProgressBar.Example</RootNamespace>
     <Version>$(CurrentVersion)</Version>
@@ -13,7 +13,5 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ShellProgressBar\ShellProgressBar.csproj" />
-    <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
-    <PackageReference Include="System.Threading.Tasks.Parallel" Version="4.3.0" />
   </ItemGroup>
 </Project>
