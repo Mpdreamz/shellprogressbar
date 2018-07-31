@@ -7,6 +7,8 @@
   </PropertyGroup>
   <PropertyGroup>
       <PackageId>ShellProgressBar</PackageId>
+      <VersionPrefix>4.0.1</VersionPrefix>
+      <VersionSuffix>dlech1</VersionSuffix>
       <Title>Cross platform simple and complex progressbars on the command line!</Title>
       <Authors>Martijn Laarman</Authors>
       <PackageLicenseUrl>http://mpdreamz.mit-license.org/</PackageLicenseUrl>
