@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace ShellProgressBar.Example.TestCases
 			var overProgressOptions = new ProgressBarOptions
 			{
 				BackgroundColor = ConsoleColor.DarkGray,
-				EnableTaskBarProgress = true,
+				EnableTaskBarProgress = RuntimeInformation.IsOSPlatform(OSPlatform.Windows),
 			};
 
 			using (var pbar = new ProgressBar(numberOfSteps, "overall progress", overProgressOptions))
