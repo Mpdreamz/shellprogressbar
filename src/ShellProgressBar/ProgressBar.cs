@@ -18,10 +18,9 @@ namespace ShellProgressBar
 		private int _isDisposed;
 
 		private Timer _timer;
-
 		private int _visibleDescendants = 0;
-		private AutoResetEvent _displayProgressEvent;
-		private Task _displayProgress;
+		private readonly AutoResetEvent _displayProgressEvent;
+		private readonly Task _displayProgress;
 
 		public ProgressBar(int maxTicks, string message, ConsoleColor color)
 			: this(maxTicks, message, new ProgressBarOptions {ForegroundColor = color})
@@ -54,8 +53,8 @@ namespace ShellProgressBar
 				{
 					while (_isDisposed == 0)
 					{
-						_displayProgressEvent.WaitOne();
-
+						if (!_displayProgressEvent.WaitOne(TimeSpan.FromSeconds(10)))
+							continue;
 						try
 						{
 							UpdateProgress();
