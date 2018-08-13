@@ -15,16 +15,16 @@ namespace ShellProgressBar.Example
 		private static readonly IList<IProgressBarExample> TestCases = new List<IProgressBarExample>
 		{
 			new DeeplyNestedProgressBarTreeExample(),
-//			new NestedProgressBarPerStepProgress(),
-//			new DrawsOnlyOnTickExample(),
-//			new ThreadedTicksOverflowExample(),
-//			new TicksOverflowExample(),
-//			new NegativeMaxTicksExample(),
-//			new ZeroMaxTicksExample(),
-//			new LongRunningExample(),
-//			new NeverCompletesExample(),
-//			new UpdatesMaxTicksExample(),
-//			new NeverTicksExample(),
+			new NestedProgressBarPerStepProgress(),
+			new DrawsOnlyOnTickExample(),
+			new ThreadedTicksOverflowExample(),
+			new TicksOverflowExample(),
+			new NegativeMaxTicksExample(),
+			new ZeroMaxTicksExample(),
+			new LongRunningExample(),
+			new NeverCompletesExample(),
+			new UpdatesMaxTicksExample(),
+			new NeverTicksExample(),
 		};
 		private static readonly IList<IProgressBarExample> Examples = new List<IProgressBarExample>
 		{
