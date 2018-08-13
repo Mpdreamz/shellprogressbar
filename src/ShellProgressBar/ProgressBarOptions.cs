@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace ShellProgressBar
 {
@@ -7,6 +8,7 @@ namespace ShellProgressBar
 	/// </summary>
 	public class ProgressBarOptions
 	{
+		private bool _enableTaskBarProgress;
 		public static readonly ProgressBarOptions Default = new ProgressBarOptions();
 
 		/// <summary> The foreground color of the progress bar, message and time</summary>
@@ -51,6 +53,16 @@ namespace ShellProgressBar
 		/// <remarks>
 		/// This feature is available on the Windows platform.
 		/// </remarks>
-		public bool EnableTaskBarProgress { get; set; }
+		public bool EnableTaskBarProgress
+		{
+			get => _enableTaskBarProgress;
+			set
+			{
+				if (value && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+					throw new NotSupportedException("Task bar progress only works on Windows");
+
+				_enableTaskBarProgress = value;
+			}
+		}
 	}
 }
