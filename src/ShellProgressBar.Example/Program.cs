@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +12,7 @@ namespace ShellProgressBar.Example
 	{
 		private static readonly IList<IProgressBarExample> TestCases = new List<IProgressBarExample>
 		{
+			new FixedDurationExample(),
 			new DeeplyNestedProgressBarTreeExample(),
 			new NestedProgressBarPerStepProgress(),
 			new DrawsOnlyOnTickExample(),

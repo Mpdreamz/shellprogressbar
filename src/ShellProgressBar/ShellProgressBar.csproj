@@ -6,13 +6,13 @@
     <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup>
-      <PackageId>ShellProgressBar</PackageId>
-      <Title>Cross platform simple and complex progressbars on the command line!</Title>
-      <Authors>Martijn Laarman</Authors>
-      <PackageLicenseUrl>http://mpdreamz.mit-license.org/</PackageLicenseUrl>
-      <PackageProjectUrl>https://github.com/Mpdreamz/shellprogressbar</PackageProjectUrl>
-      <PackageIconUrl>https://raw.github.com/Mpdreamz/shellprogressbar/master/src/nuget-icon.png</PackageIconUrl>
-      <PackageTags>console;shell;terminal;progress;progressbar</PackageTags>
+    <PackageId>ShellProgressBar</PackageId>
+    <Title>Cross platform simple and complex progressbars on the command line!</Title>
+    <Authors>Martijn Laarman</Authors>
+    <PackageLicenseUrl>http://mpdreamz.mit-license.org/</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Mpdreamz/shellprogressbar</PackageProjectUrl>
+    <PackageIconUrl>https://raw.github.com/Mpdreamz/shellprogressbar/master/src/nuget-icon.png</PackageIconUrl>
+    <PackageTags>console;shell;terminal;progress;progressbar</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.0.1" />

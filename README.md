@@ -159,6 +159,16 @@ var childOptions = new ProgressBarOptions
 
 ![children_no_collapse](https://github.com/Mpdreamz/shellprogressbar/raw/master/doc/children-no-collapse-windows.gif)
 
+
+# FixedDurationBar
+
+`ProgressBar` is great for visualizing tasks with an unknown runtime. If you have a task that you know takes a fixed amount of time there is also a `FixedDurationBar` subclass.
+`FixedDurationBar` will `Tick()` automatically but other then that all the options and usage are the same. Except it relies on the real time update feature so disabling that 
+will throw.
+
+`FixedDurationBar` exposes an `IsCompleted` and `CompletedHandle` 
+
+
 ### Credits 
 
 The initial implementation was inspired by this article.

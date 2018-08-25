@@ -40,7 +40,7 @@ namespace ShellProgressBar
 				TaskbarProgress.SetState(TaskbarProgress.TaskbarStates.Normal);
 
 			if (this.Options.DisplayTimeInRealTime)
-				_timer = new Timer((s) => DisplayProgress(), null, 500, 500);
+				_timer = new Timer((s) => OnTimerTick(), null, 500, 500);
 			else //draw once
 				_timer = new Timer((s) =>
 				{
@@ -65,6 +65,11 @@ namespace ShellProgressBar
 					}
 				}
 			});
+		}
+
+		protected virtual void OnTimerTick()
+		{
+			DisplayProgress();
 		}
 
 		protected override void Grow(ProgressBarHeight direction)
