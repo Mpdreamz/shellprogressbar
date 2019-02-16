@@ -48,6 +48,13 @@ namespace ShellProgressBar
 		public bool ProgressBarOnBottom { get; set; }
 
 		/// <summary>
+		/// Whether to show the estimated time. It can be set when
+		/// <see cref="ProgressBarBase.Tick"/> is called or the property
+		/// <see cref="ProgressBarBase.EstimatedDuration"/> is set.
+		/// </summary>
+		public bool ShowEstimatedDuration { get; set; }
+
+		/// <summary>
 		/// Use Windows' task bar to display progress.
 		/// </summary>
 		/// <remarks>
