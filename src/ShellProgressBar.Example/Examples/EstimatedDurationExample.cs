@@ -11,10 +11,9 @@ namespace ShellProgressBar.Example.Examples
 			var options = new ProgressBarOptions
 			{
 				ProgressCharacter = '─',
-				ProgressBarOnBottom = true,
 				ShowEstimatedDuration = true
 			};
-			using (var pbar = new ProgressBar(totalTicks, "progress bar is on the bottom now", options))
+			using (var pbar = new ProgressBar(totalTicks, "you can set the estimated duration too", options))
 			{
 				pbar.EstimatedDuration = TimeSpan.FromMilliseconds(totalTicks * 500);
 
@@ -23,7 +22,11 @@ namespace ShellProgressBar.Example.Examples
 				{
 					pbar.Message = $"Start {i + 1} of {totalTicks}: {initialMessage}";
 					Thread.Sleep(500);
-					pbar.Tick(i, TimeSpan.FromMilliseconds(500 * totalTicks) + TimeSpan.FromMilliseconds(500 * i), $"End {i + 1} of {totalTicks}: {initialMessage}");
+
+					// Simulate changing estimated durations while progress increases
+					var estimatedDuration =
+						TimeSpan.FromMilliseconds(500 * totalTicks) + TimeSpan.FromMilliseconds(300 * i);
+					pbar.Tick(i, estimatedDuration, $"End {i + 1} of {totalTicks}: {initialMessage}");
 				}
 			}
 		}
