@@ -348,5 +348,10 @@ namespace ShellProgressBar
 			_timer = null;
 			foreach (var c in this.Children) c.Dispose();
 		}
+
+		public IProgress<T> AsProgress<T>(Func<T, string> message = null, Func<T, double?> percentage = null)
+		{
+			return new Progress<T>(this, message, percentage);
+		}
 	}
 }
