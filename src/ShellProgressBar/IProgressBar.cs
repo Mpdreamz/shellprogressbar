@@ -6,7 +6,7 @@ namespace ShellProgressBar
 	{
 		ChildProgressBar Spawn(int maxTicks, string message, ProgressBarOptions options = null);
 
-		void Tick(string message = "");
+		void Tick(string message = null);
 
 		int MaxTicks { get; set; }
 		string Message { get; set; }
