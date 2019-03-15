@@ -222,7 +222,7 @@ namespace ShellProgressBar
 			if (this.Options.EnableTaskBarProgress)
 				TaskbarProgress.SetValue(mainPercentage, 100);
 
-			DrawChildren(this.Children, indentation, ref cursorTop);
+			DrawChildren(this.Children, indentation, ref cursorTop, this.Options.ScrollChildrenIntoView);
 
 			ResetToBottom(ref cursorTop);
 
@@ -245,7 +245,7 @@ namespace ShellProgressBar
 			} while (++cursorTop < (windowHeight - 1));
 		}
 
-		private static void DrawChildren(IEnumerable<ChildProgressBar> children, Indentation[] indentation, ref int cursorTop)
+		private static void DrawChildren(IEnumerable<ChildProgressBar> children, Indentation[] indentation, ref int cursorTop, bool scrollChildrenIntoView)
 		{
 			var view = children.Where(c => !c.Collapse).Select((c, i) => new {c, i}).ToList();
 			if (!view.Any()) return;
@@ -254,9 +254,12 @@ namespace ShellProgressBar
 			var lastChild = view.Max(t => t.i);
 			foreach (var tuple in view)
 			{
-				//Dont bother drawing children that would fall off the screen
-				if (cursorTop >= (windowHeight - 2))
-					return;
+				if (!scrollChildrenIntoView)
+				{
+					//Dont bother drawing children that would fall off the screen
+					if (cursorTop >= (windowHeight - 2))
+						return;
+				}
 
 				var child = tuple.c;
 				var currentIndentation = new Indentation(child.ForeGroundColor, tuple.i == lastChild);
@@ -291,7 +294,7 @@ namespace ShellProgressBar
 					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation, child.Options.ProgressBarOnBottom);
 				}
 
-				DrawChildren(child.Children, childIndentation, ref cursorTop);
+				DrawChildren(child.Children, childIndentation, ref cursorTop, tuple.c.Options.ScrollChildrenIntoView);
 			}
 		}
 

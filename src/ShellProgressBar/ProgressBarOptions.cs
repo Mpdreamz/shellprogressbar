@@ -64,5 +64,11 @@ namespace ShellProgressBar
 				_enableTaskBarProgress = value;
 			}
 		}
+
+		/// <summary>
+		/// By default child progress bars are not shown if they fall off the screen
+		/// Use this setting to make sure the next layer is scrolled into view
+		/// </summary>
+		public bool ScrollChildrenIntoView {get; set; } = false;
 	}
 }
