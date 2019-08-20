@@ -32,6 +32,8 @@ namespace ShellProgressBar.Example
 			new ProgressBarOnBottomExample(),
 			new ChildrenExample(),
 			new ChildrenNoCollapseExample(),
+			new IntegrationWithIProgressExample(),
+			new IntegrationWithIProgressPercentageExample(),
 		};
 
 		static void Main(string[] args)
