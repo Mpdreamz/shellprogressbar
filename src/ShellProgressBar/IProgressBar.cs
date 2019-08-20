@@ -17,6 +17,9 @@ namespace ShellProgressBar
 
 		ConsoleColor ForeGroundColor { get; }
 
+		/// <summary> This writes a new line above the progress bar on the console where <see cref="Message"/> updates the message inside the progress bar</summary>
+		void WriteLine(string message);
+
 		IProgress<T> AsProgress<T>(Func<T, string> message = null, Func<T, double?> percentage = null);
 	}
 }
