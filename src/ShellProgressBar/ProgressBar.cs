@@ -13,7 +13,8 @@ namespace ShellProgressBar
 		private static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
 		private readonly ConsoleColor _originalColor;
-		private readonly int _originalCursorTop;
+		private readonly Func<string, int> _writeMessageToConsole;
+		private int _originalCursorTop;
 		private readonly int _originalWindowTop;
 		private int _isDisposed;
 
@@ -33,6 +34,8 @@ namespace ShellProgressBar
 			_originalCursorTop = Console.CursorTop;
 			_originalWindowTop = Console.WindowTop;
 			_originalColor = Console.ForegroundColor;
+
+			_writeMessageToConsole = this.Options.WriteQueuedMessage ?? DefaultConsoleWrite;
 
 			if (!Console.IsOutputRedirected)
 				Console.CursorVisible = false;
@@ -68,10 +71,7 @@ namespace ShellProgressBar
 			});
 		}
 
-		protected virtual void OnTimerTick()
-		{
-			DisplayProgress();
-		}
+		protected virtual void OnTimerTick() => DisplayProgress();
 
 		protected override void Grow(ProgressBarHeight direction)
 		{
@@ -182,9 +182,14 @@ namespace ShellProgressBar
 			Console.ForegroundColor = indentation[depth - 1].ConsoleColor;
 		}
 
-		protected override void DisplayProgress()
+		protected override void DisplayProgress() => _displayProgressEvent.Set();
+
+		private readonly ConcurrentQueue<string> _stickyMessages = new ConcurrentQueue<string>();
+
+		public override void WriteLine(string message)
 		{
-			_displayProgressEvent.Set();
+			_stickyMessages.Enqueue(message);
+			DisplayProgress();
 		}
 
 		private void UpdateProgress()
@@ -194,8 +199,12 @@ namespace ShellProgressBar
 			if (this.Options.EnableTaskBarProgress)
 				TaskbarProgress.SetValue(mainPercentage, 100);
 
-			if (Console.IsOutputRedirected)
-				return;
+			// write queued console messages, displayprogress is signaled straight after but
+			// just in case make sure we never write more then 5 in a display progress tick
+			for (var i = 0; i < 5 && _stickyMessages.TryDequeue(out var m); i++)
+				WriteConsoleLine(m);
+
+			if (Console.IsOutputRedirected) return;
 
 			Console.CursorVisible = false;
 
@@ -239,6 +248,25 @@ namespace ShellProgressBar
 			if (!(mainPercentage >= 100)) return;
 			_timer?.Dispose();
 			_timer = null;
+		}
+
+		private void WriteConsoleLine(string m)
+		{
+			var resetString = new string(' ', Console.WindowWidth);
+			Console.Write(resetString);
+			Console.Write("\r");
+			var foreground = Console.ForegroundColor;
+			var background = Console.BackgroundColor;
+			var written = _writeMessageToConsole(m);
+			Console.ForegroundColor = foreground;
+			Console.BackgroundColor = background;
+			_originalCursorTop += written;
+		}
+
+		private static int DefaultConsoleWrite(string message)
+		{
+			Console.WriteLine(message);
+			return 1;
 		}
 
 		private static void ResetToBottom(ref int cursorTop)
@@ -324,6 +352,10 @@ namespace ShellProgressBar
 			// have been running for a very long time due to poor performance
 			// of System.Console
 			UpdateProgress();
+
+			//make sure we pop all pending messages
+			while (_stickyMessages.TryDequeue(out var m))
+				WriteConsoleLine(m);
 
 			if (this.EndTime == null) this.EndTime = DateTime.Now;
 			var openDescendantsPadding = (_visibleDescendants * 2);

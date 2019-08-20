@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace ShellProgressBar.Example.Examples
 {
-	public class FixedDurationExample : ExampleBase
+	public class PersistMessageExample : ExampleBase
 	{
 		protected override void Start()
 		{
@@ -12,7 +12,21 @@ namespace ShellProgressBar.Example.Examples
 				ForegroundColor = ConsoleColor.Yellow,
 				ForegroundColorDone = ConsoleColor.DarkGreen,
 				BackgroundColor = ConsoleColor.DarkGray,
-				BackgroundCharacter = '\u2593'
+				BackgroundCharacter = '\u2593',
+				WriteQueuedMessage = message => {
+					if (message.StartsWith("Report 500"))
+					{
+						Console.ForegroundColor = ConsoleColor.DarkRed;
+						Console.WriteLine("Add an extra message, because why not");
+
+						Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.WriteLine(message);
+                        return 2; //signal to the progressbar we wrote two messages
+					}
+					Console.ForegroundColor = ConsoleColor.Blue;
+					Console.WriteLine(message);
+					return 1;
+				}
 			};
 			var wait = TimeSpan.FromSeconds(5);
 			using (var pbar = new FixedDurationBar(wait, "", options))
@@ -32,6 +46,7 @@ namespace ShellProgressBar.Example.Examples
 			{
 				bar.Message = $"{i} events";
 				if (bar.IsCompleted) break;
+				if (i % 500 == 0) bar.WriteLine($"Report {i} to console above the progressbar");
 				Thread.Sleep(1);
 			}
 		}

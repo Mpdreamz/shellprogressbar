@@ -79,11 +79,14 @@ namespace ShellProgressBar
 
 		public ChildProgressBar Spawn(int maxTicks, string message, ProgressBarOptions options = null)
 		{
-			var pbar = new ChildProgressBar(maxTicks, message, DisplayProgress, options, this.Grow);
+			var pbar = new ChildProgressBar(maxTicks, message, DisplayProgress, WriteLine, options, this.Grow);
 			this.Children.Add(pbar);
 			DisplayProgress();
 			return pbar;
 		}
+
+		public abstract void WriteLine(string message);
+
 
 		public void Tick(string message = null)
 		{
