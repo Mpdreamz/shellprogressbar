@@ -34,7 +34,8 @@ namespace ShellProgressBar
 			_originalWindowTop = Console.WindowTop;
 			_originalColor = Console.ForegroundColor;
 
-			Console.CursorVisible = false;
+			if (!Console.IsOutputRedirected)
+				Console.CursorVisible = false;
 
 			if (this.Options.EnableTaskBarProgress)
 				TaskbarProgress.SetState(TaskbarProgress.TaskbarStates.Normal);
@@ -188,9 +189,17 @@ namespace ShellProgressBar
 
 		private void UpdateProgress()
 		{
-			Console.CursorVisible = false;
-			var indentation = new[] {new Indentation(this.ForeGroundColor, true)};
 			var mainPercentage = this.Percentage;
+
+			if (this.Options.EnableTaskBarProgress)
+				TaskbarProgress.SetValue(mainPercentage, 100);
+
+			if (Console.IsOutputRedirected)
+				return;
+
+			Console.CursorVisible = false;
+
+			var indentation = new[] { new Indentation(this.ForeGroundColor, true) };
 			var cursorTop = _originalCursorTop;
 
 			Console.ForegroundColor = this.ForeGroundColor;
@@ -219,8 +228,6 @@ namespace ShellProgressBar
 				ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
 			}
 
-			if (this.Options.EnableTaskBarProgress)
-				TaskbarProgress.SetValue(mainPercentage, 100);
 
 			DrawChildren(this.Children, indentation, ref cursorTop);
 
