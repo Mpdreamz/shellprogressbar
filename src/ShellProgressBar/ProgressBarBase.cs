@@ -111,5 +111,14 @@ namespace ShellProgressBar
 			}
 			DisplayProgress();
 		}
+
+		protected static string GetDurationString(TimeSpan duration)
+		{
+			if (duration.Days > 0)
+			{
+				return $"{duration.Days}D {duration.Hours:00}:{duration.Minutes:00}:{duration.Seconds:00}";
+			}
+			return $"{duration.Hours:00}:{duration.Minutes:00}:{duration.Seconds:00}";
+		}
 	}
 }
