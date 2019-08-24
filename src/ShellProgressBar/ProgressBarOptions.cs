@@ -70,5 +70,11 @@ namespace ShellProgressBar
 		/// Use this setting to make sure the next layer is scrolled into view
 		/// </summary>
 		public bool ScrollChildrenIntoView {get; set; } = false;
+
+    /// Take ownership of writing a message that is intended to be displayed above the progressbar.
+		/// The delegate is expected to return the number of messages written to the console as a result of the string argument.
+		/// <para>Usescase: pretty print or change the console colors, the progressbar will reset back</para>
+		/// </summary>
+		public Func<string, int> WriteQueuedMessage { get; set; }
 	}
 }

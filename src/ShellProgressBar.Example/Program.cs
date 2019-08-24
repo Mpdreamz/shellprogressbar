@@ -12,6 +12,7 @@ namespace ShellProgressBar.Example
 	{
 		private static readonly IList<IProgressBarExample> TestCases = new List<IProgressBarExample>
 		{
+			new PersistMessageExample(),
 			new FixedDurationExample(),
 			new DeeplyNestedProgressBarTreeExample(),
 			new NestedProgressBarPerStepProgress(),
@@ -32,6 +33,8 @@ namespace ShellProgressBar.Example
 			new ProgressBarOnBottomExample(),
 			new ChildrenExample(),
 			new ChildrenNoCollapseExample(),
+			new IntegrationWithIProgressExample(),
+			new IntegrationWithIProgressPercentageExample(),
 		};
 
 		static void Main(string[] args)
@@ -89,14 +92,14 @@ namespace ShellProgressBar.Example
 
 		private static async Task RunTestCases(CancellationToken token)
 		{
+			var i = 0;
 			foreach (var example in TestCases)
 			{
-				Console.Clear(); //not necessary but for demo/recording purposes.
+				if (i > 0) Console.Clear(); //not necessary but for demo/recording purposes.
 				await example.Start(token);
+				i++;
 			}
 			Console.Write("Shown all examples!");
-
-			Console.ReadLine();
 		}
 
 		public static void BusyWait(int milliseconds)

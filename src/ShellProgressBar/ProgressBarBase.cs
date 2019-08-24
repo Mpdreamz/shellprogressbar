@@ -79,11 +79,14 @@ namespace ShellProgressBar
 
 		public ChildProgressBar Spawn(int maxTicks, string message, ProgressBarOptions options = null)
 		{
-			var pbar = new ChildProgressBar(maxTicks, message, DisplayProgress, options, this.Grow);
+			var pbar = new ChildProgressBar(maxTicks, message, DisplayProgress, WriteLine, options, this.Grow);
 			this.Children.Add(pbar);
 			DisplayProgress();
 			return pbar;
 		}
+
+		public abstract void WriteLine(string message);
+
 
 		public void Tick(string message = null)
 		{
@@ -110,6 +113,15 @@ namespace ShellProgressBar
 				this.OnDone();
 			}
 			DisplayProgress();
+		}
+
+		protected static string GetDurationString(TimeSpan duration)
+		{
+			if (duration.Days > 0)
+			{
+				return $"{duration.Days}D {duration.Hours:00}:{duration.Minutes:00}:{duration.Seconds:00}";
+			}
+			return $"{duration.Hours:00}:{duration.Minutes:00}:{duration.Seconds:00}";
 		}
 	}
 }

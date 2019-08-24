@@ -7,16 +7,19 @@ namespace ShellProgressBar
 	public class ChildProgressBar : ProgressBarBase, IProgressBar
 	{
 		private readonly Action _scheduleDraw;
+		private readonly Action<string> _writeLine;
 		private readonly Action<ProgressBarHeight> _growth;
 
 		public DateTime StartDate { get; }  = DateTime.Now;
 
 		protected override void DisplayProgress() => _scheduleDraw?.Invoke();
 
-		internal ChildProgressBar(int maxTicks, string message, Action scheduleDraw, ProgressBarOptions options = null, Action<ProgressBarHeight> growth = null)
+		internal ChildProgressBar(int maxTicks, string message, Action scheduleDraw, Action<string> writeLine,
+			ProgressBarOptions options = null, Action<ProgressBarHeight> growth = null)
 			: base(maxTicks, message, options)
 		{
 			_scheduleDraw = scheduleDraw;
+			_writeLine = writeLine;
 			_growth = growth;
 			_growth?.Invoke(ProgressBarHeight.Increment);
 		}
@@ -41,10 +44,17 @@ namespace ShellProgressBar
 			}
 		}
 
+		public override void WriteLine(string message) => _writeLine(message);
+
 		public void Dispose()
 		{
 			OnDone();
 			foreach (var c in this.Children) c.Dispose();
+		}
+
+		public IProgress<T> AsProgress<T>(Func<T, string> message = null, Func<T, double?> percentage = null)
+		{
+			return new Progress<T>(this, message, percentage);
 		}
 	}
 }
