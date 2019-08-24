@@ -15,6 +15,7 @@ namespace ShellProgressBar
 		private readonly ConsoleColor _originalColor;
 		private readonly int _originalCursorTop;
 		private readonly int _originalWindowTop;
+		private readonly int _originalWindowHeight;
 		private int _isDisposed;
 
 		private Timer _timer;
@@ -32,6 +33,7 @@ namespace ShellProgressBar
 		{
 			_originalCursorTop = Console.CursorTop;
 			_originalWindowTop = Console.WindowTop;
+			_originalWindowHeight = Console.WindowHeight + _originalWindowTop;
 			_originalColor = Console.ForegroundColor;
 
 			Console.CursorVisible = false;
@@ -237,7 +239,7 @@ namespace ShellProgressBar
 		private static void ResetToBottom(ref int cursorTop)
 		{
 			var resetString = new string(' ', Console.WindowWidth);
-			var windowHeight = Console.WindowHeight;
+			var windowHeight = _originalWindowHeight + 1;
 			if (cursorTop >= (windowHeight - 1)) return;
 			do
 			{
