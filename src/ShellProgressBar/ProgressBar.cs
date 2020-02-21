@@ -271,7 +271,7 @@ namespace ShellProgressBar
 			return 1;
 		}
 
-		private static void ResetToBottom(ref int cursorTop)
+		private void ResetToBottom(ref int cursorTop)
 		{
 			var resetString = new string(' ', Console.WindowWidth);
 			var windowHeight = _originalWindowHeight + 1;
