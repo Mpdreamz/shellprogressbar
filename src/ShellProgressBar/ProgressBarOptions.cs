@@ -39,7 +39,7 @@ namespace ShellProgressBar
 		/// Collapse the progressbar when done, very useful for child progressbars
 		/// Defaults to true
 		/// </summary>
-		public bool CollapseWhenFinished { get; set; } = true;
+		public bool CollapseWhenFinished { get; set; } = false;
 
 		/// <summary>
 		/// By default the text and time information is displayed at the bottom and the progress bar at the top.
@@ -64,12 +64,6 @@ namespace ShellProgressBar
 				_enableTaskBarProgress = value;
 			}
 		}
-
-		/// <summary>
-		/// By default child progress bars are not shown if they fall off the screen
-		/// Use this setting to make sure the next layer is scrolled into view
-		/// </summary>
-		public bool ScrollChildrenIntoView {get; set; } = false;
 
 		/// <summary>
         /// Take ownership of writing a message that is intended to be displayed above the progressbar.

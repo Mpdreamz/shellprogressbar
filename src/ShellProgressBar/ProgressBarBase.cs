@@ -29,13 +29,9 @@ namespace ShellProgressBar
 
 		protected abstract void DisplayProgress();
 
-		protected virtual void Grow(ProgressBarHeight direction)
-		{
-		}
+		protected virtual void Grow(ProgressBarHeight direction) { }
 
-		protected virtual void OnDone()
-		{
-		}
+		protected virtual void OnDone() { }
 
 		public DateTime? EndTime { get; protected set; }
 
@@ -79,7 +75,7 @@ namespace ShellProgressBar
 
 		public ChildProgressBar Spawn(int maxTicks, string message, ProgressBarOptions options = null)
 		{
-			var pbar = new ChildProgressBar(maxTicks, message, DisplayProgress, WriteLine, options, this.Grow);
+			var pbar = new ChildProgressBar(maxTicks, message, DisplayProgress, WriteLine, options, d => this.Grow(d));
 			this.Children.Add(pbar);
 			DisplayProgress();
 			return pbar;

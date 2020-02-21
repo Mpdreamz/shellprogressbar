@@ -27,6 +27,8 @@ namespace ShellProgressBar
 		private bool _calledDone;
 		private readonly object _callOnce = new object();
 
+		protected override void Grow(ProgressBarHeight direction) => _growth?.Invoke(direction);
+
 		protected override void OnDone()
 		{
 			if (_calledDone) return;
