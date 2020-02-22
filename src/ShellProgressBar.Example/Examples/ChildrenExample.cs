@@ -21,7 +21,7 @@ namespace ShellProgressBar.Example.Examples
 			};
 			using (var pbar = new ProgressBar(totalTicks, "main progressbar", options))
 			{
-				TickToCompletion(pbar, totalTicks, sleep: 10, childAction: () =>
+				TickToCompletion(pbar, totalTicks, sleep: 10, childAction: i =>
 				{
 					using (var child = pbar.Spawn(totalTicks, "child actions", childOptions))
 					{

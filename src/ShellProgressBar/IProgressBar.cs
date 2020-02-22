@@ -15,7 +15,7 @@ namespace ShellProgressBar
 		double Percentage { get; }
 		int CurrentTick { get; }
 
-		ConsoleColor ForeGroundColor { get; }
+		ConsoleColor ForegroundColor { get; set; }
 
 		/// <summary> This writes a new line above the progress bar on the console where <see cref="Message"/> updates the message inside the progress bar</summary>
 		void WriteLine(string message);

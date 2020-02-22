@@ -8,13 +8,13 @@ namespace ShellProgressBar.Example.Examples
 	{
 		private bool RequestToQuit { get; set; }
 
-		protected void TickToCompletion(IProgressBar pbar, int ticks, int sleep = 1750, Action childAction = null)
+		protected void TickToCompletion(IProgressBar pbar, int ticks, int sleep = 1750, Action<int> childAction = null)
 		{
 			var initialMessage = pbar.Message;
 			for (var i = 0; i < ticks && !RequestToQuit; i++)
 			{
 				pbar.Message = $"Start {i + 1} of {ticks} {Console.CursorTop}/{Console.WindowHeight}: {initialMessage}";
-				childAction?.Invoke();
+				childAction?.Invoke(i);
 				Thread.Sleep(sleep);
 				pbar.Tick($"End {i + 1} of {ticks} {Console.CursorTop}/{Console.WindowHeight}: {initialMessage}");
 			}
