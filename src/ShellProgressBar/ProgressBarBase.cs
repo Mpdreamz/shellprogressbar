@@ -36,8 +36,18 @@ namespace ShellProgressBar
 
 		public DateTime? EndTime { get; protected set; }
 
-		public ConsoleColor ForeGroundColor =>
-			EndTime.HasValue ? this.Options.ForegroundColorDone ?? this.Options.ForegroundColor : this.Options.ForegroundColor;
+		private ConsoleColor? _dynamicForegroundColor = null;
+		public ConsoleColor ForegroundColor
+		{
+			get
+			{
+				var realColor = _dynamicForegroundColor ?? this.Options.ForegroundColor;
+				return EndTime.HasValue
+					? this.Options.ForegroundColorDone ?? realColor
+					: realColor;
+			}
+			set => _dynamicForegroundColor = value;
+		}
 
 		public int CurrentTick => _currentTick;
 
@@ -60,7 +70,6 @@ namespace ShellProgressBar
 				DisplayProgress();
 			}
 		}
-
 
 		public TimeSpan EstimatedDuration
 		{

@@ -233,11 +233,11 @@ namespace ShellProgressBar
 			if (Console.IsOutputRedirected) return;
 
 			Console.CursorVisible = false;
-			Console.ForegroundColor = this.ForeGroundColor;
+			Console.ForegroundColor = this.ForegroundColor;
 
 			GrowDrawingAreaBasedOnChildren();
 			var cursorTop = _originalCursorTop;
-			var indentation = new[] {new Indentation(this.ForeGroundColor, true)};
+			var indentation = new[] {new Indentation(this.ForegroundColor, true)};
 
 			void TopHalf()
 			{
@@ -323,11 +323,11 @@ namespace ShellProgressBar
 					return;
 
 				var child = tuple.c;
-				var currentIndentation = new Indentation(child.ForeGroundColor, tuple.i == lastChild);
+				var currentIndentation = new Indentation(child.ForegroundColor, tuple.i == lastChild);
 				var childIndentation = NewIndentation(indentation, currentIndentation);
 
 				var percentage = child.Percentage;
-				Console.ForegroundColor = child.ForeGroundColor;
+				Console.ForegroundColor = child.ForegroundColor;
 
 				void TopHalf()
 				{

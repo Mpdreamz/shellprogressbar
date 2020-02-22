@@ -16,7 +16,10 @@ namespace ShellProgressBar.Example.Examples
             };
             using (var pbar = new ProgressBar(totalTicks, "showing off styling", options))
             {
-                TickToCompletion(pbar, totalTicks, sleep: 500);
+                TickToCompletion(pbar, totalTicks, sleep: 500, i =>
+                {
+	                if (i > 5) pbar.ForegroundColor = ConsoleColor.Red;
+                });
             }
         }
     }
