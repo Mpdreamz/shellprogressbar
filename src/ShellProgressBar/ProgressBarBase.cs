@@ -103,17 +103,20 @@ namespace ShellProgressBar
 		public void Tick(string message = null)
 		{
 			Interlocked.Increment(ref _currentTick);
-
 			FinishTick(message);
 		}
 
 		public void Tick(int newTickCount, string message = null)
 		{
 			Interlocked.Exchange(ref _currentTick, newTickCount);
-
 			FinishTick(message);
 		}
 
+		public void Tick(TimeSpan estimatedDuration, string message = null)
+		{
+			Interlocked.Increment(ref _currentTick);
+			FinishTick(message);
+		}
 		public void Tick(int newTickCount, TimeSpan estimatedDuration, string message = null)
 		{
 			Interlocked.Exchange(ref _currentTick, newTickCount);

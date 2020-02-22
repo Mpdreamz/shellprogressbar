@@ -38,6 +38,7 @@ namespace ShellProgressBar.Example
 			new IntegrationWithIProgressPercentageExample(),
 			new MessageBeforeAndAfterExample(),
 			new DeeplyNestedProgressBarTreeExample(),
+			new EstimatedDurationExample()
 		};
 
 		static void Main(string[] args)

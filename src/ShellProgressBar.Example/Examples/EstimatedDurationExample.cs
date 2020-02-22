@@ -26,7 +26,7 @@ namespace ShellProgressBar.Example.Examples
 					// Simulate changing estimated durations while progress increases
 					var estimatedDuration =
 						TimeSpan.FromMilliseconds(500 * totalTicks) + TimeSpan.FromMilliseconds(300 * i);
-					pbar.Tick(i, estimatedDuration, $"End {i + 1} of {totalTicks}: {initialMessage}");
+					pbar.Tick(estimatedDuration, $"End {i + 1} of {totalTicks}: {initialMessage}");
 				}
 			}
 		}
