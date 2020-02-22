@@ -86,11 +86,6 @@ namespace ShellProgressBar
 					break;
 			}
 		}
-		public override string Message
-		{
-			get => $"{_visibleDescendants}: {base.Message}";
-			set => base.Message = value;
-		}
 
 		private void EnsureMainProgressBarVisible(int extraBars = 0 )
 		{

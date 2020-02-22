@@ -50,9 +50,9 @@ namespace ShellProgressBar
 			}
 		}
 
-		public virtual string Message
+		public string Message
 		{
-			get => $"{_message}";
+			get => _message;
 			set
 			{
 				Interlocked.Exchange(ref _message, value);
