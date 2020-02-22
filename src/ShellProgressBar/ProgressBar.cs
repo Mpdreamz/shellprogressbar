@@ -25,9 +25,7 @@ namespace ShellProgressBar
 		private readonly Task _displayProgress;
 
 		public ProgressBar(int maxTicks, string message, ConsoleColor color)
-			: this(maxTicks, message, new ProgressBarOptions {ForegroundColor = color})
-		{
-		}
+			: this(maxTicks, message, new ProgressBarOptions {ForegroundColor = color}) { }
 
 		public ProgressBar(int maxTicks, string message, ProgressBarOptions options = null)
 			: base(maxTicks, message, options)
@@ -87,6 +85,11 @@ namespace ShellProgressBar
 					Interlocked.Decrement(ref _visibleDescendants);
 					break;
 			}
+		}
+		public override string Message
+		{
+			get => $"{_visibleDescendants}: {base.Message}";
+			set => base.Message = value;
 		}
 
 		private void EnsureMainProgressBarVisible(int extraBars = 0 )
@@ -386,7 +389,8 @@ namespace ShellProgressBar
 			while (_stickyMessages.TryDequeue(out var m))
 				WriteConsoleLine(m);
 
-			if (this.EndTime == null) this.EndTime = DateTime.Now;
+			if (this.EndTime == null)
+				this.EndTime = DateTime.Now;
 
 			if (this.Options.EnableTaskBarProgress)
 				TaskbarProgress.SetState(TaskbarProgress.TaskbarStates.NoProgress);
@@ -399,26 +403,12 @@ namespace ShellProgressBar
 
 			try
 			{
-
 				var openDescendantsPadding = (_visibleDescendants * 2);
-				var newCursorTop = Math.Min(_originalWindowHeight, _originalCursorTop + 2 + (_visibleDescendants * 2));
+				var newCursorTop = Math.Min(_originalWindowHeight, _originalCursorTop + 2 + openDescendantsPadding);
 				Console.CursorVisible = true;
-				Console.WriteLine($"{Console.CursorTop} {newCursorTop} {_visibleDescendants}");
 				Console.SetCursorPosition(0, newCursorTop);
-
-				// var moveDown = 0;
-				// var currentWindowTop = Console.WindowTop;
-				// if (currentWindowTop != _originalWindowTop)
-				// {
-				// 	var x = Math.Max(0, Math.Min(2, currentWindowTop - _originalWindowTop));
-				// 	moveDown = _originalCursorTop + x;
-				// }
-				// else moveDown = _originalCursorTop + 2;
-				//
-				// Console.CursorVisible = true;
-				// Console.SetCursorPosition(0, openDescendantsPadding + moveDown);
 			}
-			//This is bad and I should feel bad, but i rather eat pbar exceptions in productions then causing false negatives
+			//This is bad and I should feel bad, but i rather eat pbar exceptions in production then causing false negatives
 			catch
 			{
 			}
