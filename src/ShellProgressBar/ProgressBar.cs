@@ -13,8 +13,10 @@ namespace ShellProgressBar
 		private static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
 		private readonly ConsoleColor _originalColor;
-		private readonly int _originalCursorTop;
+		private readonly Func<string, int> _writeMessageToConsole;
+		private int _originalCursorTop;
 		private readonly int _originalWindowTop;
+		private readonly int _originalWindowHeight;
 		private int _isDisposed;
 
 		private Timer _timer;
@@ -23,18 +25,20 @@ namespace ShellProgressBar
 		private readonly Task _displayProgress;
 
 		public ProgressBar(int maxTicks, string message, ConsoleColor color)
-			: this(maxTicks, message, new ProgressBarOptions {ForegroundColor = color})
-		{
-		}
+			: this(maxTicks, message, new ProgressBarOptions {ForegroundColor = color}) { }
 
 		public ProgressBar(int maxTicks, string message, ProgressBarOptions options = null)
 			: base(maxTicks, message, options)
 		{
 			_originalCursorTop = Console.CursorTop;
 			_originalWindowTop = Console.WindowTop;
+			_originalWindowHeight = Console.WindowHeight + _originalWindowTop;
 			_originalColor = Console.ForegroundColor;
 
-			Console.CursorVisible = false;
+			_writeMessageToConsole = this.Options.WriteQueuedMessage ?? DefaultConsoleWrite;
+
+			if (!Console.IsOutputRedirected)
+				Console.CursorVisible = false;
 
 			if (this.Options.EnableTaskBarProgress)
 				TaskbarProgress.SetState(TaskbarProgress.TaskbarStates.Normal);
@@ -55,22 +59,20 @@ namespace ShellProgressBar
 				{
 					if (!_displayProgressEvent.WaitOne(TimeSpan.FromSeconds(10)))
 						continue;
+					if (_isDisposed > 0) return;
 					try
 					{
 						UpdateProgress();
 					}
 					catch
 					{
-						// don't want to crash background thread
+						//don't want to crash background thread
 					}
 				}
 			});
 		}
 
-		protected virtual void OnTimerTick()
-		{
-			DisplayProgress();
-		}
+		protected virtual void OnTimerTick() => DisplayProgress();
 
 		protected override void Grow(ProgressBarHeight direction)
 		{
@@ -84,6 +86,23 @@ namespace ShellProgressBar
 					break;
 			}
 		}
+
+		private void EnsureMainProgressBarVisible(int extraBars = 0 )
+		{
+			var neededPadding = Math.Min(_originalWindowHeight - 2, (1 + extraBars) * 2);
+			var difference = _originalWindowHeight - _originalCursorTop;
+			var write = difference <= neededPadding ? Math.Max(0, Math.Max(neededPadding, difference)) : 0;
+
+			var written = 0;
+			for (; written < write; written++)
+				Console.WriteLine();
+			if (written == 0) return;
+
+			Console.CursorTop = _originalWindowHeight - (written);
+			_originalCursorTop = Console.CursorTop - 1;
+		}
+
+		private void GrowDrawingAreaBasedOnChildren() => EnsureMainProgressBarVisible(_visibleDescendants);
 
 		private struct Indentation
 		{
@@ -99,13 +118,13 @@ namespace ShellProgressBar
 			public readonly bool LastChild;
 		}
 
-		private static void ProgressBarBottomHalf(double percentage, DateTime startDate, DateTime? endDate, string message,
-			Indentation[] indentation, bool progressBarOnBottom, bool showEstimatedDuration, TimeSpan estimatedDuration)
+		private static void ProgressBarBottomHalf(double percentage, DateTime startDate, DateTime? endDate,
+			string message, Indentation[] indentation, bool progressBarOnBottom, bool showEstimatedDuration, TimeSpan estimatedDuration)
 		{
 			var depth = indentation.Length;
 			var maxCharacterWidth = Console.WindowWidth - (depth * 2) + 2;
 			var duration = ((endDate ?? DateTime.Now) - startDate);
-			var durationString = $"{duration.Hours:00}:{duration.Minutes:00}:{duration.Seconds:00}";
+			var durationString = GetDurationString(duration);
 
 			if (showEstimatedDuration)
 				durationString += $" / {estimatedDuration.Hours:00}:{estimatedDuration.Minutes:00}:{estimatedDuration.Seconds:00}";
@@ -184,19 +203,37 @@ namespace ShellProgressBar
 			Console.ForegroundColor = indentation[depth - 1].ConsoleColor;
 		}
 
-		protected override void DisplayProgress()
+		protected override void DisplayProgress() => _displayProgressEvent.Set();
+
+		private readonly ConcurrentQueue<string> _stickyMessages = new ConcurrentQueue<string>();
+
+		public override void WriteLine(string message)
 		{
-			_displayProgressEvent.Set();
+			_stickyMessages.Enqueue(message);
+			DisplayProgress();
 		}
 
 		private void UpdateProgress()
 		{
-			Console.CursorVisible = false;
-			var indentation = new[] {new Indentation(this.ForeGroundColor, true)};
 			var mainPercentage = this.Percentage;
-			var cursorTop = _originalCursorTop;
 
+			if (this.Options.EnableTaskBarProgress)
+				TaskbarProgress.SetValue(mainPercentage, 100);
+
+			// write queued console messages, displayprogress is signaled straight after but
+			// just in case make sure we never write more then 5 in a display progress tick
+			for (var i = 0; i < 5 && _stickyMessages.TryDequeue(out var m); i++)
+				WriteConsoleLine(m);
+
+
+			if (Console.IsOutputRedirected) return;
+
+			Console.CursorVisible = false;
 			Console.ForegroundColor = this.ForeGroundColor;
+
+			GrowDrawingAreaBasedOnChildren();
+			var cursorTop = _originalCursorTop;
+			var indentation = new[] {new Indentation(this.ForeGroundColor, true)};
 
 			void TopHalf()
 			{
@@ -208,6 +245,7 @@ namespace ShellProgressBar
 					this.Options.ProgressBarOnBottom
 				);
 			}
+
 
 			if (this.Options.ProgressBarOnBottom)
 			{
@@ -222,9 +260,6 @@ namespace ShellProgressBar
 				ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom, Options.ShowEstimatedDuration, EstimatedDuration);
 			}
 
-			if (this.Options.EnableTaskBarProgress)
-				TaskbarProgress.SetValue(mainPercentage, 100);
-
 			DrawChildren(this.Children, indentation, ref cursorTop);
 
 			ResetToBottom(ref cursorTop);
@@ -237,10 +272,29 @@ namespace ShellProgressBar
 			_timer = null;
 		}
 
-		private static void ResetToBottom(ref int cursorTop)
+		private void WriteConsoleLine(string m)
 		{
 			var resetString = new string(' ', Console.WindowWidth);
-			var windowHeight = Console.WindowHeight;
+			Console.Write(resetString);
+			Console.Write("\r");
+			var foreground = Console.ForegroundColor;
+			var background = Console.BackgroundColor;
+			var written = _writeMessageToConsole(m);
+			Console.ForegroundColor = foreground;
+			Console.BackgroundColor = background;
+			_originalCursorTop += written;
+		}
+
+		private static int DefaultConsoleWrite(string message)
+		{
+			Console.WriteLine(message);
+			return 1;
+		}
+
+		private void ResetToBottom(ref int cursorTop)
+		{
+			var resetString = new string(' ', Console.WindowWidth);
+			var windowHeight = _originalWindowHeight;
 			if (cursorTop >= (windowHeight - 1)) return;
 			do
 			{
@@ -291,8 +345,6 @@ namespace ShellProgressBar
 				{
 					TopHalf();
 					Console.SetCursorPosition(0, ++cursorTop);
-					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation, child.Options.ProgressBarOnBottom, child.Options.ShowEstimatedDuration, child.EstimatedDuration);
-				}
 
 				DrawChildren(child.Children, childIndentation, ref cursorTop);
 			}
@@ -311,6 +363,9 @@ namespace ShellProgressBar
 			if (Interlocked.CompareExchange(ref _isDisposed, 1, 0) != 0)
 				return;
 
+			_timer?.Dispose();
+			_timer = null;
+
 			// make sure background task is stopped before we clean up
 			_displayProgressEvent.Set();
 			_displayProgress.Wait();
@@ -321,35 +376,40 @@ namespace ShellProgressBar
 			// of System.Console
 			UpdateProgress();
 
-			if (this.EndTime == null) this.EndTime = DateTime.Now;
-			var openDescendantsPadding = (_visibleDescendants * 2);
+			//make sure we pop all pending messages
+			while (_stickyMessages.TryDequeue(out var m))
+				WriteConsoleLine(m);
+
+			if (this.EndTime == null)
+				this.EndTime = DateTime.Now;
 
 			if (this.Options.EnableTaskBarProgress)
 				TaskbarProgress.SetState(TaskbarProgress.TaskbarStates.NoProgress);
 
 			try
 			{
-				var moveDown = 0;
-				var currentWindowTop = Console.WindowTop;
-				if (currentWindowTop != _originalWindowTop)
-				{
-					var x = Math.Max(0, Math.Min(2, currentWindowTop - _originalWindowTop));
-					moveDown = _originalCursorTop + x;
-				}
-				else moveDown = _originalCursorTop + 2;
-
-				Console.CursorVisible = true;
-				Console.SetCursorPosition(0, openDescendantsPadding + moveDown);
+				foreach (var c in this.Children) c.Dispose();
 			}
-			// This is bad and I should feel bad, but i rather eat pbar exceptions in productions then causing false negatives
+			catch { }
+
+			try
+			{
+				var openDescendantsPadding = (_visibleDescendants * 2);
+				var newCursorTop = Math.Min(_originalWindowHeight, _originalCursorTop + 2 + openDescendantsPadding);
+				Console.CursorVisible = true;
+				Console.SetCursorPosition(0, newCursorTop);
+			}
+			//This is bad and I should feel bad, but i rather eat pbar exceptions in production then causing false negatives
 			catch
 			{
 			}
 
-			Console.WriteLine();
-			_timer?.Dispose();
-			_timer = null;
-			foreach (var c in this.Children) c.Dispose();
+			//Console.WriteLine();
+		}
+
+		public IProgress<T> AsProgress<T>(Func<T, string> message = null, Func<T, double?> percentage = null)
+		{
+			return new Progress<T>(this, message, percentage);
 		}
 	}
 }

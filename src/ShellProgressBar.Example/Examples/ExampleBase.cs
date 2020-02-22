@@ -13,10 +13,10 @@ namespace ShellProgressBar.Example.Examples
 			var initialMessage = pbar.Message;
 			for (var i = 0; i < ticks && !RequestToQuit; i++)
 			{
-				pbar.Message = $"Start {i + 1} of {ticks}: {initialMessage}";
+				pbar.Message = $"Start {i + 1} of {ticks} {Console.CursorTop}/{Console.WindowHeight}: {initialMessage}";
 				childAction?.Invoke();
 				Thread.Sleep(sleep);
-				pbar.Tick($"End {i + 1} of {ticks}: {initialMessage}");
+				pbar.Tick($"End {i + 1} of {ticks} {Console.CursorTop}/{Console.WindowHeight}: {initialMessage}");
 			}
 		}
 

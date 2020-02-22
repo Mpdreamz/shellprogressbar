@@ -30,13 +30,9 @@ namespace ShellProgressBar
 
 		protected abstract void DisplayProgress();
 
-		protected virtual void Grow(ProgressBarHeight direction)
-		{
-		}
+		protected virtual void Grow(ProgressBarHeight direction) { }
 
-		protected virtual void OnDone()
-		{
-		}
+		protected virtual void OnDone() { }
 
 		public DateTime? EndTime { get; protected set; }
 
@@ -91,11 +87,18 @@ namespace ShellProgressBar
 
 		public ChildProgressBar Spawn(int maxTicks, string message, ProgressBarOptions options = null)
 		{
-			var pbar = new ChildProgressBar(maxTicks, message, DisplayProgress, options, this.Grow);
+			// if this bar collapses all child progressbar will collapse
+			if (options?.CollapseWhenFinished == false && this.Options.CollapseWhenFinished)
+				options.CollapseWhenFinished = true;
+
+			var pbar = new ChildProgressBar(maxTicks, message, DisplayProgress, WriteLine, options ?? this.Options, d => this.Grow(d));
 			this.Children.Add(pbar);
 			DisplayProgress();
 			return pbar;
 		}
+
+		public abstract void WriteLine(string message);
+
 
 		public void Tick(string message = null)
 		{
@@ -130,6 +133,15 @@ namespace ShellProgressBar
 				this.OnDone();
 			}
 			DisplayProgress();
+		}
+
+		protected static string GetDurationString(TimeSpan duration)
+		{
+			if (duration.Days > 0)
+			{
+				return $"{duration.Days}D {duration.Hours:00}:{duration.Minutes:00}:{duration.Seconds:00}";
+			}
+			return $"{duration.Hours:00}:{duration.Minutes:00}:{duration.Seconds:00}";
 		}
 	}
 }
