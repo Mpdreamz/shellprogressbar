@@ -39,7 +39,7 @@ namespace ShellProgressBar
 		/// Collapse the progressbar when done, very useful for child progressbars
 		/// Defaults to true
 		/// </summary>
-		public bool CollapseWhenFinished { get; set; } = true;
+		public bool CollapseWhenFinished { get; set; } = false;
 
 		/// <summary>
 		/// By default the text and time information is displayed at the bottom and the progress bar at the top.
@@ -66,7 +66,7 @@ namespace ShellProgressBar
 		}
 
 		/// <summary>
-		/// Take ownership of writing a message that is intended to be displayed above the progressbar.
+        /// Take ownership of writing a message that is intended to be displayed above the progressbar.
 		/// The delegate is expected to return the number of messages written to the console as a result of the string argument.
 		/// <para>Usescase: pretty print or change the console colors, the progressbar will reset back</para>
 		/// </summary>

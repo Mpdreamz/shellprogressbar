@@ -27,6 +27,8 @@ namespace ShellProgressBar
 		private bool _calledDone;
 		private readonly object _callOnce = new object();
 
+		protected override void Grow(ProgressBarHeight direction) => _growth?.Invoke(direction);
+
 		protected override void OnDone()
 		{
 			if (_calledDone) return;
@@ -37,7 +39,7 @@ namespace ShellProgressBar
 				if (this.EndTime == null)
 					this.EndTime = DateTime.Now;
 
-				if (this.Collapse)
+				if (this.Options.CollapseWhenFinished)
 					_growth?.Invoke(ProgressBarHeight.Decrement);
 
 				_calledDone = true;
@@ -48,8 +50,8 @@ namespace ShellProgressBar
 
 		public void Dispose()
 		{
-			OnDone();
 			foreach (var c in this.Children) c.Dispose();
+			OnDone();
 		}
 
 		public IProgress<T> AsProgress<T>(Func<T, string> message = null, Func<T, double?> percentage = null)

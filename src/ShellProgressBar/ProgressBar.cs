@@ -16,6 +16,7 @@ namespace ShellProgressBar
 		private readonly Func<string, int> _writeMessageToConsole;
 		private int _originalCursorTop;
 		private readonly int _originalWindowTop;
+		private readonly int _originalWindowHeight;
 		private int _isDisposed;
 
 		private Timer _timer;
@@ -24,15 +25,14 @@ namespace ShellProgressBar
 		private readonly Task _displayProgress;
 
 		public ProgressBar(int maxTicks, string message, ConsoleColor color)
-			: this(maxTicks, message, new ProgressBarOptions {ForegroundColor = color})
-		{
-		}
+			: this(maxTicks, message, new ProgressBarOptions {ForegroundColor = color}) { }
 
 		public ProgressBar(int maxTicks, string message, ProgressBarOptions options = null)
 			: base(maxTicks, message, options)
 		{
 			_originalCursorTop = Console.CursorTop;
 			_originalWindowTop = Console.WindowTop;
+			_originalWindowHeight = Console.WindowHeight + _originalWindowTop;
 			_originalColor = Console.ForegroundColor;
 
 			_writeMessageToConsole = this.Options.WriteQueuedMessage ?? DefaultConsoleWrite;
@@ -59,13 +59,14 @@ namespace ShellProgressBar
 				{
 					if (!_displayProgressEvent.WaitOne(TimeSpan.FromSeconds(10)))
 						continue;
+					if (_isDisposed > 0) return;
 					try
 					{
 						UpdateProgress();
 					}
 					catch
 					{
-						// don't want to crash background thread
+						//don't want to crash background thread
 					}
 				}
 			});
@@ -85,6 +86,28 @@ namespace ShellProgressBar
 					break;
 			}
 		}
+		public override string Message
+		{
+			get => $"{_visibleDescendants}: {base.Message}";
+			set => base.Message = value;
+		}
+
+		private void EnsureMainProgressBarVisible(int extraBars = 0 )
+		{
+			var neededPadding = Math.Min(_originalWindowHeight - 2, (1 + extraBars) * 2);
+			var difference = _originalWindowHeight - _originalCursorTop;
+			var write = difference <= neededPadding ? Math.Max(0, Math.Max(neededPadding, difference)) : 0;
+
+			var written = 0;
+			for (; written < write; written++)
+				Console.WriteLine();
+			if (written == 0) return;
+
+			Console.CursorTop = _originalWindowHeight - (written);
+			_originalCursorTop = Console.CursorTop - 1;
+		}
+
+		private void GrowDrawingAreaBasedOnChildren() => EnsureMainProgressBarVisible(_visibleDescendants);
 
 		private struct Indentation
 		{
@@ -100,7 +123,8 @@ namespace ShellProgressBar
 			public readonly bool LastChild;
 		}
 
-		private static void ProgressBarBottomHalf(double percentage, DateTime startDate, DateTime? endDate, string message,
+		private static void ProgressBarBottomHalf(double percentage, DateTime startDate, DateTime? endDate,
+			string message,
 			Indentation[] indentation, bool progressBarOnBottom)
 		{
 			var depth = indentation.Length;
@@ -204,14 +228,15 @@ namespace ShellProgressBar
 			for (var i = 0; i < 5 && _stickyMessages.TryDequeue(out var m); i++)
 				WriteConsoleLine(m);
 
+
 			if (Console.IsOutputRedirected) return;
 
 			Console.CursorVisible = false;
-
-			var indentation = new[] { new Indentation(this.ForeGroundColor, true) };
-			var cursorTop = _originalCursorTop;
-
 			Console.ForegroundColor = this.ForeGroundColor;
+
+			GrowDrawingAreaBasedOnChildren();
+			var cursorTop = _originalCursorTop;
+			var indentation = new[] {new Indentation(this.ForeGroundColor, true)};
 
 			void TopHalf()
 			{
@@ -224,9 +249,11 @@ namespace ShellProgressBar
 				);
 			}
 
+
 			if (this.Options.ProgressBarOnBottom)
 			{
-				ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
+				ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation,
+					this.Options.ProgressBarOnBottom);
 				Console.SetCursorPosition(0, ++cursorTop);
 				TopHalf();
 			}
@@ -234,9 +261,9 @@ namespace ShellProgressBar
 			{
 				TopHalf();
 				Console.SetCursorPosition(0, ++cursorTop);
-				ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation, this.Options.ProgressBarOnBottom);
+				ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation,
+					this.Options.ProgressBarOnBottom);
 			}
-
 
 			DrawChildren(this.Children, indentation, ref cursorTop);
 
@@ -269,10 +296,10 @@ namespace ShellProgressBar
 			return 1;
 		}
 
-		private static void ResetToBottom(ref int cursorTop)
+		private void ResetToBottom(ref int cursorTop)
 		{
 			var resetString = new string(' ', Console.WindowWidth);
-			var windowHeight = Console.WindowHeight;
+			var windowHeight = _originalWindowHeight;
 			if (cursorTop >= (windowHeight - 1)) return;
 			do
 			{
@@ -315,7 +342,8 @@ namespace ShellProgressBar
 
 				if (child.Options.ProgressBarOnBottom)
 				{
-					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation, child.Options.ProgressBarOnBottom);
+					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation,
+						child.Options.ProgressBarOnBottom);
 					Console.SetCursorPosition(0, ++cursorTop);
 					TopHalf();
 				}
@@ -323,7 +351,8 @@ namespace ShellProgressBar
 				{
 					TopHalf();
 					Console.SetCursorPosition(0, ++cursorTop);
-					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation, child.Options.ProgressBarOnBottom);
+					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation,
+						child.Options.ProgressBarOnBottom);
 				}
 
 				DrawChildren(child.Children, childIndentation, ref cursorTop);
@@ -343,6 +372,9 @@ namespace ShellProgressBar
 			if (Interlocked.CompareExchange(ref _isDisposed, 1, 0) != 0)
 				return;
 
+			_timer?.Dispose();
+			_timer = null;
+
 			// make sure background task is stopped before we clean up
 			_displayProgressEvent.Set();
 			_displayProgress.Wait();
@@ -357,35 +389,31 @@ namespace ShellProgressBar
 			while (_stickyMessages.TryDequeue(out var m))
 				WriteConsoleLine(m);
 
-			if (this.EndTime == null) this.EndTime = DateTime.Now;
-			var openDescendantsPadding = (_visibleDescendants * 2);
+			if (this.EndTime == null)
+				this.EndTime = DateTime.Now;
 
 			if (this.Options.EnableTaskBarProgress)
 				TaskbarProgress.SetState(TaskbarProgress.TaskbarStates.NoProgress);
 
 			try
 			{
-				var moveDown = 0;
-				var currentWindowTop = Console.WindowTop;
-				if (currentWindowTop != _originalWindowTop)
-				{
-					var x = Math.Max(0, Math.Min(2, currentWindowTop - _originalWindowTop));
-					moveDown = _originalCursorTop + x;
-				}
-				else moveDown = _originalCursorTop + 2;
-
-				Console.CursorVisible = true;
-				Console.SetCursorPosition(0, openDescendantsPadding + moveDown);
+				foreach (var c in this.Children) c.Dispose();
 			}
-			// This is bad and I should feel bad, but i rather eat pbar exceptions in productions then causing false negatives
+			catch { }
+
+			try
+			{
+				var openDescendantsPadding = (_visibleDescendants * 2);
+				var newCursorTop = Math.Min(_originalWindowHeight, _originalCursorTop + 2 + openDescendantsPadding);
+				Console.CursorVisible = true;
+				Console.SetCursorPosition(0, newCursorTop);
+			}
+			//This is bad and I should feel bad, but i rather eat pbar exceptions in production then causing false negatives
 			catch
 			{
 			}
 
-			Console.WriteLine();
-			_timer?.Dispose();
-			_timer = null;
-			foreach (var c in this.Children) c.Dispose();
+			//Console.WriteLine();
 		}
 
 		public IProgress<T> AsProgress<T>(Func<T, string> message = null, Func<T, double?> percentage = null)

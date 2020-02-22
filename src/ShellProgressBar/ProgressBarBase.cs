@@ -29,13 +29,9 @@ namespace ShellProgressBar
 
 		protected abstract void DisplayProgress();
 
-		protected virtual void Grow(ProgressBarHeight direction)
-		{
-		}
+		protected virtual void Grow(ProgressBarHeight direction) { }
 
-		protected virtual void OnDone()
-		{
-		}
+		protected virtual void OnDone() { }
 
 		public DateTime? EndTime { get; protected set; }
 
@@ -54,9 +50,9 @@ namespace ShellProgressBar
 			}
 		}
 
-		public string Message
+		public virtual string Message
 		{
-			get => _message;
+			get => $"{_message}";
 			set
 			{
 				Interlocked.Exchange(ref _message, value);
@@ -79,7 +75,11 @@ namespace ShellProgressBar
 
 		public ChildProgressBar Spawn(int maxTicks, string message, ProgressBarOptions options = null)
 		{
-			var pbar = new ChildProgressBar(maxTicks, message, DisplayProgress, WriteLine, options, this.Grow);
+			// if this bar collapses all child progressbar will collapse
+			if (options?.CollapseWhenFinished == false && this.Options.CollapseWhenFinished)
+				options.CollapseWhenFinished = true;
+
+			var pbar = new ChildProgressBar(maxTicks, message, DisplayProgress, WriteLine, options ?? this.Options, d => this.Grow(d));
 			this.Children.Add(pbar);
 			DisplayProgress();
 			return pbar;

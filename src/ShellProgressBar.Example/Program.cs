@@ -35,6 +35,8 @@ namespace ShellProgressBar.Example
 			new ChildrenNoCollapseExample(),
 			new IntegrationWithIProgressExample(),
 			new IntegrationWithIProgressPercentageExample(),
+			new MessageBeforeAndAfterExample(),
+			new DeeplyNestedProgressBarTreeExample(),
 		};
 
 		static void Main(string[] args)
@@ -76,18 +78,8 @@ namespace ShellProgressBar.Example
 				Console.Error.WriteLine($"There are only {Examples.Count} examples, {nth} is not valid");
 			}
 			var example = Examples[nth];
-			var requestToQuit = false;
-			token.Register(() => requestToQuit = true);
 
-
-			while (!requestToQuit)
-			{
-				Console.WriteLine();
-				await example.Start(token);
-				var c = Console.Read();
-				if (c == 'q') break;
-				Console.Clear();
-			}
+			await example.Start(token);
 		}
 
 		private static async Task RunTestCases(CancellationToken token)
