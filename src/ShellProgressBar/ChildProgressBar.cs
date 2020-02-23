@@ -8,27 +8,35 @@ namespace ShellProgressBar
 	{
 		private readonly Action _scheduleDraw;
 		private readonly Action<string> _writeLine;
+		private readonly Action<string> _writeError;
 		private readonly Action<ProgressBarHeight> _growth;
 
 		public DateTime StartDate { get; }  = DateTime.Now;
 
 		protected override void DisplayProgress() => _scheduleDraw?.Invoke();
 
-		internal ChildProgressBar(int maxTicks, string message, Action scheduleDraw, Action<string> writeLine,
-			ProgressBarOptions options = null, Action<ProgressBarHeight> growth = null)
+		internal ChildProgressBar(
+			int maxTicks,
+			string message,
+			Action scheduleDraw,
+			Action<string> writeLine,
+			Action<string> writeError,
+			ProgressBarOptions options = null,
+			Action<ProgressBarHeight> growth = null
+		)
 			: base(maxTicks, message, options)
 		{
 			_scheduleDraw = scheduleDraw;
 			_writeLine = writeLine;
+			_writeError = writeError;
 			_growth = growth;
 			_growth?.Invoke(ProgressBarHeight.Increment);
 		}
 
-		private bool _calledDone;
-		private readonly object _callOnce = new object();
-
 		protected override void Grow(ProgressBarHeight direction) => _growth?.Invoke(direction);
 
+		private bool _calledDone;
+		private readonly object _callOnce = new object();
 		protected override void OnDone()
 		{
 			if (_calledDone) return;
@@ -47,6 +55,7 @@ namespace ShellProgressBar
 		}
 
 		public override void WriteLine(string message) => _writeLine(message);
+		public override void WriteErrorLine(string message) => _writeError(message);
 
 		public void Dispose()
 		{

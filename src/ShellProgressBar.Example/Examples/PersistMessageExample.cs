@@ -13,18 +13,20 @@ namespace ShellProgressBar.Example.Examples
 				ForegroundColorDone = ConsoleColor.DarkGreen,
 				BackgroundColor = ConsoleColor.DarkGray,
 				BackgroundCharacter = '\u2593',
-				WriteQueuedMessage = message => {
-					if (message.StartsWith("Report 500"))
+				WriteQueuedMessage = o =>
+				{
+					var writer = o.Error ? Console.Error : Console.Out;
+					if (o.Line.StartsWith("Report 500"))
 					{
 						Console.ForegroundColor = ConsoleColor.DarkRed;
-						Console.WriteLine("Add an extra message, because why not");
+						writer.WriteLine("Add an extra message, because why not");
 
 						Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine(message);
+                        writer.WriteLine(o.Line);
                         return 2; //signal to the progressbar we wrote two messages
 					}
 					Console.ForegroundColor = ConsoleColor.Blue;
-					Console.WriteLine(message);
+					writer.WriteLine(o.Line);
 					return 1;
 				}
 			};

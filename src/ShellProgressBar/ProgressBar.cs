@@ -13,10 +13,11 @@ namespace ShellProgressBar
 		private static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
 		private readonly ConsoleColor _originalColor;
-		private readonly Func<string, int> _writeMessageToConsole;
-		private int _originalCursorTop;
+		private readonly Func<ConsoleOutLine, int> _writeMessageToConsole;
 		private readonly int _originalWindowTop;
 		private readonly int _originalWindowHeight;
+		private readonly bool _startedRedirected;
+		private int _originalCursorTop;
 		private int _isDisposed;
 
 		private Timer _timer;
@@ -38,8 +39,9 @@ namespace ShellProgressBar
 			_originalColor = Console.ForegroundColor;
 
 			_writeMessageToConsole = this.Options.WriteQueuedMessage ?? DefaultConsoleWrite;
+			_startedRedirected = Console.IsOutputRedirected;
 
-			if (!Console.IsOutputRedirected)
+			if (!_startedRedirected)
 				Console.CursorVisible = false;
 
 			if (this.Options.EnableTaskBarProgress)
@@ -209,11 +211,16 @@ namespace ShellProgressBar
 
 		protected override void DisplayProgress() => _displayProgressEvent.Set();
 
-		private readonly ConcurrentQueue<string> _stickyMessages = new ConcurrentQueue<string>();
+		private readonly ConcurrentQueue<ConsoleOutLine> _stickyMessages = new ConcurrentQueue<ConsoleOutLine>();
 
 		public override void WriteLine(string message)
 		{
-			_stickyMessages.Enqueue(message);
+			_stickyMessages.Enqueue(new ConsoleOutLine(message));
+			DisplayProgress();
+		}
+		public override void WriteErrorLine(string message)
+		{
+			_stickyMessages.Enqueue(new ConsoleOutLine(message, error: true));
 			DisplayProgress();
 		}
 
@@ -230,7 +237,7 @@ namespace ShellProgressBar
 				WriteConsoleLine(m);
 
 
-			if (Console.IsOutputRedirected) return;
+			if (_startedRedirected) return;
 
 			Console.CursorVisible = false;
 			Console.ForegroundColor = this.ForegroundColor;
@@ -278,7 +285,7 @@ namespace ShellProgressBar
 			_timer = null;
 		}
 
-		private void WriteConsoleLine(string m)
+		private void WriteConsoleLine(ConsoleOutLine m)
 		{
 			var resetString = new string(' ', Console.WindowWidth);
 			Console.Write(resetString);
@@ -291,9 +298,10 @@ namespace ShellProgressBar
 			_originalCursorTop += written;
 		}
 
-		private static int DefaultConsoleWrite(string message)
+		private static int DefaultConsoleWrite(ConsoleOutLine line)
 		{
-			Console.WriteLine(message);
+			if (line.Error) Console.Error.WriteLine(line.Line);
+			else Console.WriteLine(line.Line);
 			return 1;
 		}
 
@@ -403,9 +411,7 @@ namespace ShellProgressBar
 			{
 				foreach (var c in this.Children) c.Dispose();
 			}
-			catch
-			{
-			}
+			catch { }
 
 			try
 			{
@@ -415,11 +421,7 @@ namespace ShellProgressBar
 				Console.SetCursorPosition(0, newCursorTop);
 			}
 			//This is bad and I should feel bad, but i rather eat pbar exceptions in production then causing false negatives
-			catch
-			{
-			}
-
-			//Console.WriteLine();
+			catch { }
 		}
 
 		public IProgress<T> AsProgress<T>(Func<T, string> message = null, Func<T, double?> percentage = null)
