@@ -10,6 +10,7 @@
     <AssemblyVersion>$(CurrentAssemblyVersion)</AssemblyVersion>
     <FileVersion>$(CurrentAssemblyFileVersion)</FileVersion>
     <IsPackable>False</IsPackable>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ShellProgressBar\ShellProgressBar.csproj" />

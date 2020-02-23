@@ -354,6 +354,9 @@ namespace ShellProgressBar
 				{
 					TopHalf();
 					Console.SetCursorPosition(0, ++cursorTop);
+					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation,
+						child.Options.ProgressBarOnBottom, child.Options.ShowEstimatedDuration,
+						child.EstimatedDuration);
 
 					DrawChildren(child.Children, childIndentation, ref cursorTop);
 				}
