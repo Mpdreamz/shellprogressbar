@@ -14,6 +14,10 @@
     <PackageIconUrl>https://raw.github.com/Mpdreamz/shellprogressbar/master/src/nuget-icon.png</PackageIconUrl>
     <PackageTags>console;shell;terminal;progress;progressbar</PackageTags>
   </PropertyGroup>
+  <PropertyGroup>
+    <DocumentationFile>D:\Code\shellprogressbar\src\ShellProgressBar\ShellProgressBar.xml</DocumentationFile>
+    <Version>5.0.0</Version>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.0.1" />
   </ItemGroup>
