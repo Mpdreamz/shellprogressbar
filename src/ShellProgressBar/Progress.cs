@@ -17,19 +17,14 @@ namespace ShellProgressBar
 
 		public void Report(T value)
 		{
-			if (_progressBar.TryGetTarget(out var progressBar))
-			{
-				var message = _message?.Invoke(value);
-				var percentage = _percentage(value);
-				if (percentage.HasValue)
-				{
-					progressBar.Tick((int)(percentage * progressBar.MaxTicks), message);
-				}
-				else
-				{
-					progressBar.Tick(message);
-				}
-			}
+			if (!_progressBar.TryGetTarget(out var progressBar)) return;
+
+			var message = _message?.Invoke(value);
+			var percentage = _percentage(value);
+			if (percentage.HasValue)
+				progressBar.Tick((int)(percentage * progressBar.MaxTicks), message);
+			else
+				progressBar.Tick(message);
 		}
 	}
 }

@@ -17,7 +17,10 @@ namespace ShellProgressBar.Example.Examples
 			};
 			using (var pbar = new ProgressBar(totalTicks, "showing off styling", options))
 			{
-				TickToCompletion(pbar, totalTicks, sleep: 500);
+				TickToCompletion(pbar, totalTicks, sleep: 500, i =>
+				{
+					pbar.WriteErrorLine($"This should appear above:{i}");
+				});
 			}
 
 			Console.WriteLine("This should not be overwritten either afterwards");

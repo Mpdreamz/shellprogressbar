@@ -100,13 +100,16 @@ namespace ShellProgressBar
 			if (options?.CollapseWhenFinished == false && this.Options.CollapseWhenFinished)
 				options.CollapseWhenFinished = true;
 
-			var pbar = new ChildProgressBar(maxTicks, message, DisplayProgress, WriteLine, options ?? this.Options, d => this.Grow(d));
+			var pbar = new ChildProgressBar(
+				maxTicks, message, DisplayProgress, WriteLine, WriteErrorLine, options ?? this.Options, d => this.Grow(d)
+			);
 			this.Children.Add(pbar);
 			DisplayProgress();
 			return pbar;
 		}
 
 		public abstract void WriteLine(string message);
+		public abstract void WriteErrorLine(string message);
 
 
 		public void Tick(string message = null)
