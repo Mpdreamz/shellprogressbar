@@ -41,6 +41,20 @@ using (var pbar = new ProgressBar(totalTicks, "Initial message", options))
 }
 ```
 
+## Reporting progression
+
+There are two ways to report progression. You can use the `Tick()` function as described above. Alternatively you can report progression through an [`IProgress<T>`](https://docs.microsoft.com/en-us/dotnet/api/system.iprogress-1) instance that you obtain by calling `AsProgress<T>()` on the progress bar object.
+
+For a simple case where the progress type is a `float` value between 0.0 and 1.0 that represents the completion percentage, use `progressBar.AsProgress<float>()`:
+
+```csharp
+using ProgressBar progressBar = new ProgressBar(10000, "My Progress Message");
+IProgress progress = progressBar.AsProgress<float>();
+progress.Report(0.25); // Advances the progress bar to 25%
+```
+
+See `IntegrationWithIProgressExample.cs` and `IntegrationWithIProgressPercentageExample.cs` in the [src/ShellProgressBar.Example/Examples](src/ShellProgressBar.Example/Examples) directory for full examples.
+
 ## Options
 
 ### Progress bar position
