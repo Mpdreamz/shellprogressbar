@@ -4,6 +4,7 @@
     <AssemblyName>ShellProgressBar</AssemblyName>
     <RootNamespace>ShellProgressBar</RootNamespace>
     <TargetFrameworks>netstandard1.3;netstandard2.0;net461</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <PackageId>ShellProgressBar</PackageId>
