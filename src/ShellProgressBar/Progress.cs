@@ -2,7 +2,7 @@ using System;
 
 namespace ShellProgressBar
 {
-	internal class Progress<T> : IProgress<T>
+	internal class Progress<T> : IProgress<T>, IDisposable
 	{
 		private readonly WeakReference<IProgressBar> _progressBar;
 		private readonly Func<T, string> _message;
@@ -25,6 +25,14 @@ namespace ShellProgressBar
 				progressBar.Tick((int)(percentage * progressBar.MaxTicks), message);
 			else
 				progressBar.Tick(message);
+		}
+
+		public void Dispose()
+		{
+			if (_progressBar.TryGetTarget(out var progressBar))
+			{
+				progressBar.Dispose();
+			}
 		}
 	}
 }
