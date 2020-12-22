@@ -12,6 +12,7 @@ namespace ShellProgressBar.Example
 	{
 		private static readonly IList<IProgressBarExample> TestCases = new List<IProgressBarExample>
 		{
+			new IndeterminateProgressExample(),
 			new PersistMessageExample(),
 			new FixedDurationExample(),
 			new DeeplyNestedProgressBarTreeExample(),
@@ -27,6 +28,7 @@ namespace ShellProgressBar.Example
 			new NeverTicksExample(),
 			new EstimatedDurationExample(),
 		};
+
 		private static readonly IList<IProgressBarExample> Examples = new List<IProgressBarExample>
 		{
 			new DontDisplayInRealTimeExample(),
@@ -71,15 +73,15 @@ namespace ShellProgressBar.Example
 					Console.Error.WriteLine($"Unknown command:{command}");
 					return;
 			}
-
 		}
 
 		private static async Task RunExample(CancellationToken token, int nth)
 		{
-			if (nth > Examples.Count -1 || nth < 0)
+			if (nth > Examples.Count - 1 || nth < 0)
 			{
 				Console.Error.WriteLine($"There are only {Examples.Count} examples, {nth} is not valid");
 			}
+
 			var example = Examples[nth];
 
 			await example.Start(token);
@@ -94,6 +96,7 @@ namespace ShellProgressBar.Example
 				await example.Start(token);
 				i++;
 			}
+
 			Console.Write("Shown all examples!");
 		}
 
@@ -101,6 +104,5 @@ namespace ShellProgressBar.Example
 		{
 			Thread.Sleep(milliseconds);
 		}
-
 	}
 }
