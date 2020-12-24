@@ -365,9 +365,9 @@ namespace ShellProgressBar
 					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation,
 						child.Options.ProgressBarOnBottom, child.Options.ShowEstimatedDuration,
 						child.EstimatedDuration);
-
-					DrawChildren(child.Children, childIndentation, ref cursorTop);
 				}
+
+				DrawChildren(child.Children, childIndentation, ref cursorTop);
 			}
 		}
 
