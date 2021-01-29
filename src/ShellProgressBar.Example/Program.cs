@@ -50,7 +50,6 @@ namespace ShellProgressBar.Example
 			var cts = new CancellationTokenSource();
 			Console.CancelKeyPress += (s, e) =>
 			{
-				e.Cancel = true;
 				cts.Cancel();
 			};
 
