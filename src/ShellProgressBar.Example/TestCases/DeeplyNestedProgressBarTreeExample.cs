@@ -15,6 +15,8 @@ namespace ShellProgressBar.Example.TestCases
 
 			var overProgressOptions = new ProgressBarOptions
 			{
+				DenseProgressBar = true,
+				ProgressCharacter = '─',
 				BackgroundColor = ConsoleColor.DarkGray,
 				EnableTaskBarProgress = RuntimeInformation.IsOSPlatform(OSPlatform.Windows),
 			};
@@ -23,6 +25,7 @@ namespace ShellProgressBar.Example.TestCases
 			{
 				var stepBarOptions = new ProgressBarOptions
 				{
+					DenseProgressBar = true,
 					ForegroundColor = ConsoleColor.Cyan,
 					ForegroundColorDone = ConsoleColor.DarkGreen,
 					ProgressCharacter = '─',
@@ -33,6 +36,7 @@ namespace ShellProgressBar.Example.TestCases
 				{
 					var workBarOptions = new ProgressBarOptions
 					{
+						DenseProgressBar = true,
 						ForegroundColor = ConsoleColor.Yellow,
 						ProgressCharacter = '─',
 						BackgroundColor = ConsoleColor.DarkGray,

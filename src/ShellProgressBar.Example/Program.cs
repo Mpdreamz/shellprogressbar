@@ -12,7 +12,6 @@ namespace ShellProgressBar.Example
 	{
 		private static readonly IList<IProgressBarExample> TestCases = new List<IProgressBarExample>
 		{
-			new IndeterminateProgressExample(),
 			new PersistMessageExample(),
 			new FixedDurationExample(),
 			new DeeplyNestedProgressBarTreeExample(),
@@ -27,6 +26,7 @@ namespace ShellProgressBar.Example
 			new UpdatesMaxTicksExample(),
 			new NeverTicksExample(),
 			new EstimatedDurationExample(),
+			new IndeterminateProgressExample(),
 		};
 
 		private static readonly IList<IProgressBarExample> Examples = new List<IProgressBarExample>
@@ -96,7 +96,6 @@ namespace ShellProgressBar.Example
 				await example.Start(token);
 				i++;
 			}
-
 			Console.Write("Shown all examples!");
 		}
 
