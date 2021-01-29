@@ -55,6 +55,11 @@ namespace ShellProgressBar
 		public bool ShowEstimatedDuration { get; set; }
 
 		/// <summary>
+		/// Whether to show the percentage number
+		/// </summary>
+		public bool DisableBottomPercentage { get; set; } = false;
+
+		/// <summary>
 		/// Use Windows' task bar to display progress.
 		/// </summary>
 		/// <remarks>

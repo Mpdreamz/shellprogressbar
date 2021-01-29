@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -124,7 +125,7 @@ namespace ShellProgressBar
 
 		private static void ProgressBarBottomHalf(double percentage, DateTime startDate, DateTime? endDate,
 			string message, Indentation[] indentation, bool progressBarOnBottom, bool showEstimatedDuration,
-			TimeSpan estimatedDuration)
+			TimeSpan estimatedDuration, bool disableBottomPercentage)
 		{
 			var depth = indentation.Length;
 			var maxCharacterWidth = Console.WindowWidth - (depth * 2) + 2;
@@ -138,6 +139,7 @@ namespace ShellProgressBar
 			var column1Width = Console.WindowWidth - durationString.Length - (depth * 2) + 2;
 			var column2Width = durationString.Length;
 
+
 			if (progressBarOnBottom)
 				DrawTopHalfPrefix(indentation, depth);
 			else
@@ -146,6 +148,12 @@ namespace ShellProgressBar
 			var format = $"{{0, -{column1Width}}}{{1,{column2Width}}}";
 
 			var truncatedMessage = StringExtensions.Excerpt($"{percentage:N2}%" + " " + message, column1Width);
+
+			if (disableBottomPercentage)
+			{
+				truncatedMessage = StringExtensions.Excerpt(message, column1Width);
+			}
+
 			var formatted = string.Format(format, truncatedMessage, durationString);
 			var m = formatted + new string(' ', Math.Max(0, maxCharacterWidth - formatted.Length));
 			Console.Write(m);
@@ -261,7 +269,7 @@ namespace ShellProgressBar
 			if (this.Options.ProgressBarOnBottom)
 			{
 				ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation,
-					this.Options.ProgressBarOnBottom, Options.ShowEstimatedDuration, EstimatedDuration);
+					this.Options.ProgressBarOnBottom, Options.ShowEstimatedDuration, EstimatedDuration, this.Options.DisableBottomPercentage);
 				Console.SetCursorPosition(0, ++cursorTop);
 				TopHalf();
 			}
@@ -270,7 +278,7 @@ namespace ShellProgressBar
 				TopHalf();
 				Console.SetCursorPosition(0, ++cursorTop);
 				ProgressBarBottomHalf(mainPercentage, this._startDate, null, this.Message, indentation,
-					this.Options.ProgressBarOnBottom, Options.ShowEstimatedDuration, EstimatedDuration);
+					this.Options.ProgressBarOnBottom, Options.ShowEstimatedDuration, EstimatedDuration, this.Options.DisableBottomPercentage);
 			}
 
 			DrawChildren(this.Children, indentation, ref cursorTop);
@@ -354,7 +362,7 @@ namespace ShellProgressBar
 				{
 					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation,
 						child.Options.ProgressBarOnBottom, child.Options.ShowEstimatedDuration,
-						child.EstimatedDuration);
+						child.EstimatedDuration, child.Options.DisableBottomPercentage);
 					Console.SetCursorPosition(0, ++cursorTop);
 					TopHalf();
 				}
@@ -364,7 +372,7 @@ namespace ShellProgressBar
 					Console.SetCursorPosition(0, ++cursorTop);
 					ProgressBarBottomHalf(percentage, child.StartDate, child.EndTime, child.Message, childIndentation,
 						child.Options.ProgressBarOnBottom, child.Options.ShowEstimatedDuration,
-						child.EstimatedDuration);
+						child.EstimatedDuration, child.Options.DisableBottomPercentage);
 				}
 
 				DrawChildren(child.Children, childIndentation, ref cursorTop);
