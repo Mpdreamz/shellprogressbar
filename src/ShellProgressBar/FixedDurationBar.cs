@@ -12,7 +12,8 @@ namespace ShellProgressBar
 
 		public FixedDurationBar(TimeSpan duration, string message, ConsoleColor color) : this(duration, message, new ProgressBarOptions {ForegroundColor = color}) { }
 
-		public FixedDurationBar(TimeSpan duration,  string message, ProgressBarOptions options = null) : base((int)Math.Ceiling(duration.TotalSeconds), message, options)
+		public FixedDurationBar(TimeSpan duration,  string message, ProgressBarOptions options = null)
+			: base((int)Math.Ceiling(duration.TotalSeconds) * 2, message, options)
 		{
 			if (!this.Options.DisplayTimeInRealTime)
 				throw new ArgumentException(
@@ -24,7 +25,7 @@ namespace ShellProgressBar
 		protected override void OnTimerTick()
 		{
 			Interlocked.Increment(ref _seenTicks);
-			if (_seenTicks % 2 == 0) this.Tick();
+			this.Tick();
 			base.OnTimerTick();
 		}
 
