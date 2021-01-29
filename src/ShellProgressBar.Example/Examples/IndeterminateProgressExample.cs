@@ -28,7 +28,7 @@ namespace ShellProgressBar.Example.Examples
 						}
 					}).Wait();
 				pbar.Finished();
-				pbar.Message= "Finis! Moving on to the next in 5 seconds.";
+				pbar.Message= "Finished! Moving on to the next in 5 seconds.";
 			}
 
 			Task.Delay(5000).Wait();
