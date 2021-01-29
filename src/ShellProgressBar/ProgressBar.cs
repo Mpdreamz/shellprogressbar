@@ -143,17 +143,15 @@ namespace ShellProgressBar
 		{
 			var depth = indentation.Length;
 			var messageWidth = 30;
-			var width = (Console.WindowWidth - (depth * 2) + 2) - messageWidth;
+			var maxCharacterWidth = Console.WindowWidth - (depth * 2) + 2;
+			var truncatedMessage = StringExtensions.Excerpt(message, messageWidth - 2) + " ";
+			var width = (Console.WindowWidth - (depth * 2) + 2) - truncatedMessage.Length;
 
-			var truncatedMessage = StringExtensions.Excerpt(message, messageWidth - 2);
-			//if (progressBarOnTop)
-			//else
-			//DrawTopHalfPrefix(indentation, depth);
 
 			var newWidth = (int) ((width * percentage) / 100d);
 			var progBar = new string(progressCharacter, newWidth);
 			DrawBottomHalfPrefix(indentation, depth);
-			Console.Write(truncatedMessage + " ");
+			Console.Write(truncatedMessage);
 			Console.Write(progBar);
 			if (backgroundColor.HasValue)
 			{
