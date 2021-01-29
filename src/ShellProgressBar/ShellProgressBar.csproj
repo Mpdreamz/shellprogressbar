@@ -10,7 +10,6 @@
     <PackageId>ShellProgressBar</PackageId>
     <Title>Cross platform simple and complex progressbars on the command line!</Title>
     <Authors>Martijn Laarman</Authors>
-    <PackageLicenseUrl>http://mpdreamz.mit-license.org/</PackageLicenseUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Mpdreamz/shellprogressbar</PackageProjectUrl>
     <PackageIconUrl>https://raw.github.com/Mpdreamz/shellprogressbar/master/src/nuget-icon.png</PackageIconUrl>
