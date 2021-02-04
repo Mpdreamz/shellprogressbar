@@ -1,26 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <!--<Import Project="..\..\build\Versioning.targets" />-->
   <PropertyGroup>
     <AssemblyName>ShellProgressBar</AssemblyName>
     <RootNamespace>ShellProgressBar</RootNamespace>
-    <TargetFrameworks>netstandard1.3;netstandard2.0;net461</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup>
     <PackageId>ShellProgressBar</PackageId>
     <Title>Cross platform simple and complex progressbars on the command line!</Title>
-    <Authors>Martijn Laarman</Authors>
+    <Authors>Martijn Laarman;AngryLittleHamster</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/Mpdreamz/shellprogressbar</PackageProjectUrl>
-    <PackageIconUrl>https://raw.github.com/Mpdreamz/shellprogressbar/master/src/nuget-icon.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/angryLittleHamster/shellprogressbar</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/angryLittleHamster/shellprogressbar/main/src/nuget-icon.png</PackageIconUrl>
     <PackageTags>console;shell;terminal;progress;progressbar</PackageTags>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.0.1" />
-  </ItemGroup>
 </Project>
