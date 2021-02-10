@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ShellProgressBar.Example.Examples;
@@ -46,7 +45,6 @@ namespace ShellProgressBar.Example
 
 		static void Main(string[] args)
 		{
-			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 			var cts = new CancellationTokenSource();
 			Console.CancelKeyPress += (s, e) =>
 			{
