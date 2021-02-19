@@ -11,6 +11,20 @@ namespace ShellProgressBar
 		private bool _enableTaskBarProgress;
 		public static readonly ProgressBarOptions Default = new ProgressBarOptions();
 
+		public static string ProgressMessageEncodingName { get; set; }
+
+		public string MessageEncodingName
+		{
+			get
+			{
+				return ProgressMessageEncodingName;
+			}
+			set
+			{
+				ProgressMessageEncodingName = value;
+			}
+		}
+
 		/// <summary> The foreground color of the progress bar, message and time</summary>
 		public ConsoleColor ForegroundColor { get; set; } = ConsoleColor.Green;
 
@@ -83,7 +97,7 @@ namespace ShellProgressBar
 		}
 
 		/// <summary>
-        /// Take ownership of writing a message that is intended to be displayed above the progressbar.
+		/// Take ownership of writing a message that is intended to be displayed above the progressbar.
 		/// The delegate is expected to return the number of messages written to the console as a result of the string argument.
 		/// <para>Use case: pretty print or change the console colors, the progressbar will reset back</para>
 		/// </summary>

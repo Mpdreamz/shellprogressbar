@@ -147,6 +147,10 @@ namespace ShellProgressBar
 			var truncatedMessage = StringExtensions.Excerpt(message, messageWidth - 2) + " ";
 			var width = (Console.WindowWidth - (depth * 2) + 2) - truncatedMessage.Length;
 
+			if (!string.IsNullOrWhiteSpace(ProgressBarOptions.ProgressMessageEncodingName))
+			{
+				width = width + message.Length - System.Text.Encoding.GetEncoding(ProgressBarOptions.ProgressMessageEncodingName).GetBytes(message).Length;
+			}
 
 			var newWidth = (int) ((width * percentage) / 100d);
 			var progBar = new string(progressCharacter, newWidth);
@@ -180,6 +184,10 @@ namespace ShellProgressBar
 			var column1Width = Console.WindowWidth - durationString.Length - (depth * 2) + 2;
 			var column2Width = durationString.Length;
 
+			if (!string.IsNullOrWhiteSpace(ProgressBarOptions.ProgressMessageEncodingName))
+			{
+				column1Width = column1Width + message.Length - System.Text.Encoding.GetEncoding(ProgressBarOptions.ProgressMessageEncodingName).GetBytes(message).Length;
+			}
 
 			if (progressBarOnBottom)
 				DrawTopHalfPrefix(indentation, depth);
