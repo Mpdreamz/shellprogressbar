@@ -188,7 +188,7 @@ namespace ShellProgressBar
 
 			var format = $"{{0, -{column1Width}}}{{1,{column2Width}}}";
 			var percentageFormatedString = string.Format(percentageFormat, percentage);
-			var truncatedMessage = StringExtensions.Excerpt(percentageFormatedString + "% " + message, column1Width);
+			var truncatedMessage = StringExtensions.Excerpt(percentageFormatedString + message, column1Width);
 
 			if (disableBottomPercentage)
 			{

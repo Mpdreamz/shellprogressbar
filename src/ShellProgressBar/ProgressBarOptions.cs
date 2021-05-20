@@ -65,7 +65,7 @@ namespace ShellProgressBar
 		public bool DisableBottomPercentage { get; set; } = false;
 
 		/// <summary> Set percentage decimal format. By default is {0:N2}. </summary>
-		public string PercentageFormat { get; set; } = "{0:N2}";
+		public string PercentageFormat { get; set; } = "{0:N2}% ";
 
 		/// <summary>
 		/// Use Windows' task bar to display progress.
