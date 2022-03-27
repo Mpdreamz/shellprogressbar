@@ -179,7 +179,7 @@ namespace ShellProgressBar
 
 			if (showEstimatedDuration)
 				durationString +=
-					$" / {estimatedDuration.Hours:00}:{estimatedDuration.Minutes:00}:{estimatedDuration.Seconds:00}";
+					$" / {GetDurationString(estimatedDuration)}";
 
 			var column1Width = Console.WindowWidth - durationString.Length - (depth * 2) + 2;
 			var column2Width = durationString.Length;
