@@ -127,6 +127,8 @@ namespace ShellProgressBar
 		public void Tick(TimeSpan estimatedDuration, string message = null)
 		{
 			Interlocked.Increment(ref _currentTick);
+			_estimatedDuration = estimatedDuration;
+
 			FinishTick(message);
 		}
 		public void Tick(int newTickCount, TimeSpan estimatedDuration, string message = null)
