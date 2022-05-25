@@ -43,9 +43,9 @@ namespace ShellProgressBar
 			{
 				return _dynamicForegroundColorDone ?? this.Options.ForegroundColorDone;
 			}
-			set => _dynamicForegroundColor = value;
+			set => _dynamicForegroundColorDone = value;
 		}
-		
+
 		private ConsoleColor? _dynamicForegroundColor = null;
 		public ConsoleColor ForegroundColor
 		{

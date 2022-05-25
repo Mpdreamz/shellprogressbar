@@ -27,6 +27,7 @@ namespace ShellProgressBar.Example
 			new NeverTicksExample(),
 			new EstimatedDurationExample(),
 			new IndeterminateProgressExample(),
+			new AlternateFinishedColorExample()
 		};
 
 		private static readonly IList<IProgressBarExample> Examples = new List<IProgressBarExample>
@@ -41,7 +42,8 @@ namespace ShellProgressBar.Example
 			new MessageBeforeAndAfterExample(),
 			new DeeplyNestedProgressBarTreeExample(),
 			new EstimatedDurationExample(),
-			new DownloadProgressExample()
+			new DownloadProgressExample(),
+			new AlternateFinishedColorExample()
 		};
 
 		static void Main(string[] args)
