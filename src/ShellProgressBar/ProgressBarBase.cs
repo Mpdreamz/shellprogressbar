@@ -108,6 +108,20 @@ namespace ShellProgressBar
 			return pbar;
 		}
 
+		public IndeterminateChildProgressBar SpawnIndeterminate(string message, ProgressBarOptions options = null)
+		{
+			// if this bar collapses all child progressbar will collapse
+			if (options?.CollapseWhenFinished == false && this.Options.CollapseWhenFinished)
+				options.CollapseWhenFinished = true;
+
+			var pbar = new IndeterminateChildProgressBar(
+				message, DisplayProgress, WriteLine, WriteErrorLine, options ?? this.Options, d => this.Grow(d)
+			);
+			this.Children.Add(pbar);
+			DisplayProgress();
+			return pbar;
+		}
+
 		public abstract void WriteLine(string message);
 		public abstract void WriteErrorLine(string message);
 

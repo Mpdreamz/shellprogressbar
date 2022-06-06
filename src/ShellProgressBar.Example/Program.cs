@@ -27,6 +27,7 @@ namespace ShellProgressBar.Example
 			new NeverTicksExample(),
 			new EstimatedDurationExample(),
 			new IndeterminateProgressExample(),
+			new IndeterminateChildrenNoCollapseExample(),
 		};
 
 		private static readonly IList<IProgressBarExample> Examples = new List<IProgressBarExample>
