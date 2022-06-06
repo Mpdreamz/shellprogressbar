@@ -53,6 +53,7 @@ namespace ShellProgressBar
 
 		public void Dispose()
 		{
+			if (_timer != null) _timer.Dispose();
 			foreach (var c in this.Children) c.Dispose();
 			OnDone();
 		}
