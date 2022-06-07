@@ -31,6 +31,14 @@ namespace ShellProgressBar
 		/// <summary> The foreground color the progressbar has reached a 100 percent</summary>
 		public ConsoleColor? ForegroundColorDone { get; set; }
 
+		/// <summary>
+		/// The foreground color the progressbar when it has observed an error
+		/// <para>If set this takes priority over any other color as soon as an error is observed</para>
+		/// Use either <see cref="ProgressBarBase.ObservedError"/> or <see cref="ProgressBarBase.WriteErrorLine"/> to
+		/// put the progressbar in errored state
+		/// </summary>
+		public ConsoleColor? ForegroundColorError { get; set; }
+
 		/// <summary> The background color of the remainder of the progressbar</summary>
 		public ConsoleColor? BackgroundColor { get; set; }
 

@@ -12,6 +12,7 @@ namespace ShellProgressBar.Example
 	{
 		private static readonly IList<IProgressBarExample> TestCases = new List<IProgressBarExample>
 		{
+			/*
 			new PersistMessageExample(),
 			new FixedDurationExample(),
 			new DeeplyNestedProgressBarTreeExample(),
@@ -28,6 +29,8 @@ namespace ShellProgressBar.Example
 			new EstimatedDurationExample(),
 			new IndeterminateProgressExample(),
 			new IndeterminateChildrenNoCollapseExample(),
+			*/
+			new AlternateFinishedColorExample()
 		};
 
 		private static readonly IList<IProgressBarExample> Examples = new List<IProgressBarExample>
@@ -42,7 +45,8 @@ namespace ShellProgressBar.Example
 			new MessageBeforeAndAfterExample(),
 			new DeeplyNestedProgressBarTreeExample(),
 			new EstimatedDurationExample(),
-			new DownloadProgressExample()
+			new DownloadProgressExample(),
+			new AlternateFinishedColorExample()
 		};
 
 		static void Main(string[] args)
