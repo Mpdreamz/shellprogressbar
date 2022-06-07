@@ -1,17 +1,11 @@
 using System;
 using System.Collections.Concurrent;
-using System.Text;
 using System.Threading;
 
 namespace ShellProgressBar
 {
 	public abstract class ProgressBarBase
 	{
-		static ProgressBarBase()
-		{
-			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-		}
-
 		protected readonly DateTime _startDate = DateTime.Now;
 		private int _maxTicks;
 		private int _currentTick;
