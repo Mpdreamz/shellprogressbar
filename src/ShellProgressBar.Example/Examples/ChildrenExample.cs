@@ -1,10 +1,11 @@
 using System;
+using System.Threading.Tasks;
 
 namespace ShellProgressBar.Example.Examples
 {
 	public class ChildrenExample : ExampleBase
 	{
-		protected override void Start()
+		protected override Task StartAsync()
 		{
 			const int totalTicks = 10;
 			var options = new ProgressBarOptions
@@ -19,16 +20,13 @@ namespace ShellProgressBar.Example.Examples
 				BackgroundColor = ConsoleColor.DarkGray,
 				ProgressCharacter = '─'
 			};
-			using (var pbar = new ProgressBar(totalTicks, "main progressbar", options))
+			using var pbar = new ProgressBar(totalTicks, "main progressbar", options);
+			TickToCompletion(pbar, totalTicks, sleep: 10, childAction: i =>
 			{
-				TickToCompletion(pbar, totalTicks, sleep: 10, childAction: i =>
-				{
-					using (var child = pbar.Spawn(totalTicks, "child actions", childOptions))
-					{
-						TickToCompletion(child, totalTicks, sleep: 100);
-					}
-				});
-			}
+				using var child = pbar.Spawn(totalTicks, "child actions", childOptions);
+				TickToCompletion(child, totalTicks, sleep: 100);
+			});
+			return Task.CompletedTask;
 		}
 	}
 }

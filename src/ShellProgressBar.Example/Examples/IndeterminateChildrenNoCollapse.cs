@@ -1,13 +1,14 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ShellProgressBar.Example.Examples
 {
 	public class IndeterminateChildrenNoCollapseExample : ExampleBase
 	{
-		protected override void Start()
+		protected override async Task StartAsync()
 		{
-			const int totalChildren = 10;
+			const int totalChildren = 2;
 			Random random = new Random();
 			var options = new ProgressBarOptions
 			{
@@ -29,7 +30,7 @@ namespace ShellProgressBar.Example.Examples
 					pbar.Message = $"Start {i} of {totalChildren}: main progressbar";
 					using (var child = pbar.SpawnIndeterminate("child action " + i, childOptions))
 					{
-						Thread.Sleep(1000 * random.Next(5, 15));
+						await Task.Delay(1000 * random.Next(5, 15));
 						child.Finished();
 					}
 					pbar.Tick();

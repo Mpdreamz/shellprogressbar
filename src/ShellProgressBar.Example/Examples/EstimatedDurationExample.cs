@@ -1,11 +1,12 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ShellProgressBar.Example.Examples
 {
 	public class EstimatedDurationExample : ExampleBase
 	{
-		protected override void Start()
+		protected override Task StartAsync()
 		{
 			const int totalTicks = 10;
 			var options = new ProgressBarOptions
@@ -29,6 +30,8 @@ namespace ShellProgressBar.Example.Examples
 					pbar.Tick(estimatedDuration, $"End {i + 1} of {totalTicks}: {initialMessage}");
 				}
 			}
+
+			return Task.CompletedTask;
 		}
 	}
 }

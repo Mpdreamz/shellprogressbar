@@ -1,11 +1,12 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ShellProgressBar.Example.Examples
 {
 	public class FixedDurationExample : ExampleBase
 	{
-		protected override void Start()
+		protected override Task StartAsync()
 		{
 			var options = new ProgressBarOptions
 			{
@@ -24,6 +25,8 @@ namespace ShellProgressBar.Example.Examples
 					Console.Error.WriteLine($"{nameof(FixedDurationBar)} did not signal {nameof(FixedDurationBar.CompletedHandle)} after {wait}");
 
 			}
+
+			return Task.CompletedTask;
 		}
 
 		private static void LongRunningTask(FixedDurationBar bar)
