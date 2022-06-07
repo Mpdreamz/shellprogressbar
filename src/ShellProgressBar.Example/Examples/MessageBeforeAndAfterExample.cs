@@ -1,10 +1,11 @@
 using System;
+using System.Threading.Tasks;
 
 namespace ShellProgressBar.Example.Examples
 {
 	public class MessageBeforeAndAfterExample : ExampleBase
 	{
-		protected override void Start()
+		protected override Task StartAsync()
 		{
 			Console.WriteLine("This should not be overwritten");
 			const int totalTicks = 10;
@@ -24,6 +25,7 @@ namespace ShellProgressBar.Example.Examples
 			}
 
 			Console.WriteLine("This should not be overwritten either afterwards");
+			return Task.CompletedTask;
 		}
 	}
 }

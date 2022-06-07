@@ -2,12 +2,13 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ShellProgressBar.Example.Examples
 {
 	public class DownloadProgressExample : ExampleBase
 	{
-		protected override void Start()
+		protected override Task StartAsync()
 		{
 			var files = new string[]
 			{
@@ -28,7 +29,11 @@ namespace ShellProgressBar.Example.Examples
 				using var child = pbar.Spawn(100, "page: " + i, childOptions);
 				try
 				{
+#pragma warning disable CS0618
+#pragma warning disable SYSLIB0014
 					using var client = new WebClient();
+#pragma warning restore CS0618
+#pragma warning restore SYSLIB0014
 					client.DownloadProgressChanged += (o, args) => child.Tick(args.ProgressPercentage);
 					client.DownloadDataCompleted += (o, args) => data = args.Result;
 					client.DownloadDataAsync(new Uri(file));
@@ -44,6 +49,8 @@ namespace ShellProgressBar.Example.Examples
 					pbar.WriteLine(error.Message);
 				}
 			}
+
+			return Task.CompletedTask;
 		}
 	}
 }

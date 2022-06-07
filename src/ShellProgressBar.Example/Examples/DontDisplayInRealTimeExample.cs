@@ -1,8 +1,10 @@
+using System.Threading.Tasks;
+
 namespace ShellProgressBar.Example.Examples
 {
 	public class DontDisplayInRealTimeExample : ExampleBase
 	{
-		protected override void Start()
+		protected override Task StartAsync()
 		{
 			const int totalTicks = 5;
 			var options = new ProgressBarOptions
@@ -13,6 +15,8 @@ namespace ShellProgressBar.Example.Examples
 			{
 				TickToCompletion(pbar, totalTicks, sleep: 1750);
 			}
+
+			return Task.CompletedTask;
 		}
 	}
 }

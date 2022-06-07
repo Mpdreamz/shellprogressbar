@@ -6,7 +6,7 @@ namespace ShellProgressBar.Example.Examples
 {
 	public class IndeterminateProgressExample : ExampleBase
 	{
-		protected override void Start()
+		protected override Task StartAsync()
 		{
 			var options = new ProgressBarOptions
 			{
@@ -31,9 +31,7 @@ namespace ShellProgressBar.Example.Examples
 				pbar.Message= "Finished! Moving on to the next in 5 seconds.";
 			}
 
-			Task.Delay(5000).Wait();
+			return Task.CompletedTask;
 		}
-
-
 	}
 }

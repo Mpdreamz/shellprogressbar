@@ -20,15 +20,14 @@ namespace ShellProgressBar.Example.Examples
 			}
 		}
 
-		public Task Start(CancellationToken token)
+		public async Task Start(CancellationToken token)
 		{
 			RequestToQuit = false;
 			token.Register(() => RequestToQuit = true);
 
-			this.Start();
-			return Task.FromResult(1);
+			await this.StartAsync();
 		}
 
-		protected abstract void Start();
+		protected abstract Task StartAsync();
 	}
 }

@@ -1,16 +1,18 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ShellProgressBar.Example.Examples
 {
 	public class PersistMessageExample : ExampleBase
 	{
-		protected override void Start()
+		protected override Task StartAsync()
 		{
 			var options = new ProgressBarOptions
 			{
 				ForegroundColor = ConsoleColor.Yellow,
 				ForegroundColorDone = ConsoleColor.DarkGreen,
+				ForegroundColorError = ConsoleColor.Red,
 				BackgroundColor = ConsoleColor.DarkGray,
 				BackgroundCharacter = '\u2593',
 				WriteQueuedMessage = o =>
@@ -32,15 +34,16 @@ namespace ShellProgressBar.Example.Examples
 				}
 			};
 			var wait = TimeSpan.FromSeconds(6);
-			using (var pbar = new FixedDurationBar(wait, "", options))
+			using var pbar = new FixedDurationBar(wait, "", options);
+			var t = new Thread(()=> LongRunningTask(pbar));
+			t.Start();
+
+			if (!pbar.CompletedHandle.WaitOne(wait.Subtract(TimeSpan.FromSeconds(.5))))
 			{
-				var t = new Thread(()=> LongRunningTask(pbar));
-				t.Start();
-
-				if (!pbar.CompletedHandle.WaitOne(wait.Subtract(TimeSpan.FromSeconds(.5))))
-					pbar.WriteErrorLine($"{nameof(FixedDurationBar)} did not signal {nameof(FixedDurationBar.CompletedHandle)} after {wait}");
-
+				pbar.WriteErrorLine($"{nameof(FixedDurationBar)} did not signal {nameof(FixedDurationBar.CompletedHandle)} after {wait}");
+				pbar.Dispose();
 			}
+			return Task.CompletedTask;
 		}
 
 		private static void LongRunningTask(FixedDurationBar bar)
@@ -48,7 +51,7 @@ namespace ShellProgressBar.Example.Examples
 			for (var i = 0; i < 1_000_000; i++)
 			{
 				bar.Message = $"{i} events";
-				if (bar.IsCompleted) break;
+				if (bar.IsCompleted || bar.ObservedError) break;
 				if (i % 500 == 0) bar.WriteLine($"Report {i} to console above the progressbar");
 				Thread.Sleep(1);
 			}
