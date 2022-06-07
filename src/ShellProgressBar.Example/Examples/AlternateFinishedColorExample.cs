@@ -12,23 +12,24 @@ namespace ShellProgressBar.Example.Examples
 			{
 				ForegroundColor = ConsoleColor.Yellow,
 				ForegroundColorDone = ConsoleColor.DarkGreen,
+				ForegroundColorError = ConsoleColor.Red,
 				BackgroundColor = ConsoleColor.DarkGray,
 				BackgroundCharacter = '\u2593'
 			};
 
-			using (var pbar = new IndeterminateProgressBar("Indeterminate", options))
+			using (var pbar = new ProgressBar(100, "100 ticks", options))
 			{
 				Task.Run(
 					() =>
 					{
-						for (var i = 0; i < 100; i++)
+						for (var i = 0; i < 10; i++)
 						{
-							pbar.Message= $"The progress is beating to its own drum (indeterminate) {i}";
 							Task.Delay(10).Wait();
+							pbar.Tick($"Step {i}");
 						}
+						pbar.WriteErrorLine("The task ran into an issue!");
+						// OR pbar.ObservedError = true;
 					}).Wait();
-				pbar.Finished();
-				pbar.ForegroundColorDone = ConsoleColor.Red;
 				pbar.Message= "Indicate the task is done, but the status is not Green.";
 			}
 

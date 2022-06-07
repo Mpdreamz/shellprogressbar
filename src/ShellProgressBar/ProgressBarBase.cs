@@ -36,15 +36,7 @@ namespace ShellProgressBar
 
 		public DateTime? EndTime { get; protected set; }
 
-		private ConsoleColor? _dynamicForegroundColorDone = null;
-		public ConsoleColor? ForegroundColorDone
-		{
-			get
-			{
-				return _dynamicForegroundColorDone ?? this.Options.ForegroundColorDone;
-			}
-			set => _dynamicForegroundColorDone = value;
-		}
+		public bool ObservedError { get; set; }
 
 		private ConsoleColor? _dynamicForegroundColor = null;
 		public ConsoleColor ForegroundColor
@@ -52,8 +44,11 @@ namespace ShellProgressBar
 			get
 			{
 				var realColor = _dynamicForegroundColor ?? this.Options.ForegroundColor;
+				if (this.ObservedError && this.Options.ForegroundColorError.HasValue)
+					return this.Options.ForegroundColorError.Value;
+
 				return EndTime.HasValue
-					? ForegroundColorDone ?? realColor
+					? this.Options.ForegroundColorDone ?? realColor
 					: realColor;
 			}
 			set => _dynamicForegroundColor = value;

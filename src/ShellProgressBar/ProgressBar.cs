@@ -277,6 +277,7 @@ namespace ShellProgressBar
 		}
 		public override void WriteErrorLine(string message)
 		{
+			this.ObservedError = true;
 			_stickyMessages.Enqueue(new ConsoleOutLine(message, error: true));
 			DisplayProgress();
 		}
