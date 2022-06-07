@@ -27,6 +27,7 @@ namespace ShellProgressBar.Example
 			new NeverTicksExample(),
 			new EstimatedDurationExample(),
 			new IndeterminateProgressExample(),
+			new IndeterminateChildrenNoCollapseExample(),
 			new AlternateFinishedColorExample()
 		};
 
