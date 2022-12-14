@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,11 +14,10 @@ namespace ShellProgressBar
 
 		private readonly ConsoleColor _originalColor;
 		private readonly Func<ConsoleOutLine, int> _writeMessageToConsole;
-		private readonly int _originalWindowTop;
-		private readonly int _originalWindowHeight;
 		private readonly bool _startedRedirected;
 		private int _originalCursorTop;
 		private int _isDisposed;
+		private int _lastDrawBottomPos;
 
 		private Timer _timer;
 		private int _visibleDescendants = 0;
@@ -41,8 +39,6 @@ namespace ShellProgressBar
 			try
 			{
 				_originalCursorTop = Console.CursorTop;
-				_originalWindowTop = Console.WindowTop;
-				_originalWindowHeight = Console.WindowHeight + _originalWindowTop;
 				_originalColor = Console.ForegroundColor;
 			}
 			catch
@@ -56,7 +52,7 @@ namespace ShellProgressBar
 			if (this.Options.EnableTaskBarProgress)
 				TaskbarProgress.SetState(TaskbarProgress.TaskbarStates.Normal);
 
-			if (this.Options.DisplayTimeInRealTime)
+			if (this.Options.DisplayTimeInRealTime) 
 				_timer = new Timer((s) => OnTimerTick(), null, 500, 500);
 			else //draw once
 				_timer = new Timer((s) =>
@@ -102,18 +98,22 @@ namespace ShellProgressBar
 
 		private void EnsureMainProgressBarVisible(int extraBars = 0)
 		{
+			var lastVisibleRow = Console.WindowHeight + Console.WindowTop;
+
 			var pbarHeight = this.Options.DenseProgressBar ? 1 : 2;
-			var neededPadding = Math.Min(_originalWindowHeight - pbarHeight, (1 + extraBars) * pbarHeight);
-			var difference = _originalWindowHeight - _originalCursorTop;
-			var write = difference <= neededPadding ? Math.Max(0, Math.Max(neededPadding, difference)) : 0;
+			var neededPadding = Math.Min(lastVisibleRow - pbarHeight, (1 + extraBars) * pbarHeight);
+			var difference = lastVisibleRow - _originalCursorTop;
+			var write = difference <= neededPadding ? Math.Min(Console.WindowHeight, Math.Max(0, Math.Max(neededPadding, difference))) : 0;
+
+			if (write == 0)
+				return;
 
 			var written = 0;
 			for (; written < write; written++)
 				Console.WriteLine();
-			if (written == 0) return;
 
-			Console.CursorTop = _originalWindowHeight - (written);
-			_originalCursorTop = Console.CursorTop - 1;
+			Console.CursorTop = Console.WindowHeight + Console.WindowTop - write;
+			_originalCursorTop = Console.CursorTop -1;
 		}
 
 		private void GrowDrawingAreaBasedOnChildren() => EnsureMainProgressBarVisible(_visibleDescendants);
@@ -345,7 +345,12 @@ namespace ShellProgressBar
 
 			DrawChildren(this.Children, indentation, ref cursorTop, Options.PercentageFormat);
 
-			ResetToBottom(ref cursorTop);
+			if (Console.CursorTop < _lastDrawBottomPos)
+			{
+				// The bar shrunk. Need to clean the remaining rows
+				ClearLines(_lastDrawBottomPos - Console.CursorTop);
+			}
+			_lastDrawBottomPos = Console.CursorTop;
 
 			Console.SetCursorPosition(0, _originalCursorTop);
 			Console.ForegroundColor = _originalColor;
@@ -355,35 +360,60 @@ namespace ShellProgressBar
 			_timer = null;
 		}
 
+		private static void ClearLines(int numOfLines)
+		{
+			// Use bufferwidth and not only the visible width. (currently identical on all platforms)
+			Console.Write(new string(' ', Console.BufferWidth * numOfLines));
+		}
+
+		private static string _resetString = "";
+		private static void ClearCurrentLine()
+		{
+			if (_resetString.Length != Console.BufferWidth + 2)
+			{
+				// Use buffer width and not only the visible width. (currently identical on all platforms)
+				_resetString = $"\r{new string(' ', Console.BufferWidth)}\r";
+			}
+			Console.Write(_resetString);
+		}
+
 		private void WriteConsoleLine(ConsoleOutLine m)
 		{
-			var resetString = new string(' ', Console.WindowWidth);
-			Console.Write(resetString);
-			Console.Write("\r");
 			var foreground = Console.ForegroundColor;
 			var background = Console.BackgroundColor;
-			var written = _writeMessageToConsole(m);
+			ClearCurrentLine();
+			var moved = _writeMessageToConsole(m);
 			Console.ForegroundColor = foreground;
 			Console.BackgroundColor = background;
-			_originalCursorTop += written;
+			_originalCursorTop += moved;
 		}
 
 		private static int DefaultConsoleWrite(ConsoleOutLine line)
 		{
-			if (line.Error) Console.Error.WriteLine(line.Line);
-			else Console.WriteLine(line.Line);
-			return 1;
-		}
+			var fromPos = Console.CursorTop;
 
-		private void ResetToBottom(ref int cursorTop)
-		{
-			var resetString = new string(' ', Console.WindowWidth);
-			var windowHeight = _originalWindowHeight;
-			if (cursorTop >= (windowHeight - 1)) return;
-			do
+			// First line was already cleared by WriteConsoleLine().
+			// Would be cleaner to do it here, but would break backwards compatibility for those
+			// who implemented their own writer function.
+			bool isClearedLine = true;
+			foreach (var outLine in line.Line.SplitToConsoleLines())
 			{
-				Console.Write(resetString);
-			} while (++cursorTop < (windowHeight - 1));
+				// Skip slower line clearing if we scrolled on last write
+				if (!isClearedLine)
+					ClearCurrentLine();
+
+				int lastCursorTop = Console.CursorTop;
+				if (line.Error)
+					Console.Error.WriteLine(outLine);
+				else
+					Console.WriteLine(outLine);
+
+				// If the cursorTop is still on same position we are at the end of the buffer and scrolling happened.
+				isClearedLine = lastCursorTop == Console.CursorTop;
+			}
+
+			// Return how many rows the cursor actually moved by.
+			return Console.CursorTop - fromPos;
 		}
 
 		private static void DrawChildren(IEnumerable<ChildProgressBar> children, Indentation[] indentation,
@@ -392,12 +422,12 @@ namespace ShellProgressBar
 			var view = children.Where(c => !c.Collapse).Select((c, i) => new {c, i}).ToList();
 			if (!view.Any()) return;
 
-			var windowHeight = Console.WindowHeight;
+			var lastVisibleRow = Console.WindowHeight + Console.WindowTop;
 			var lastChild = view.Max(t => t.i);
 			foreach (var tuple in view)
 			{
-				//Dont bother drawing children that would fall off the screen
-				if (cursorTop >= (windowHeight - 2))
+				// Dont bother drawing children that would fall off the screen and don't want to scroll top out of view
+				 if (cursorTop >= (lastVisibleRow - 2))
 					return;
 
 				var child = tuple.c;
@@ -500,7 +530,7 @@ namespace ShellProgressBar
 			{
 				var pbarHeight = this.Options.DenseProgressBar ? 1 : 2;
 				var openDescendantsPadding = (_visibleDescendants * pbarHeight);
-				var newCursorTop = Math.Min(_originalWindowHeight, _originalCursorTop + pbarHeight + openDescendantsPadding);
+				var newCursorTop = Math.Min(Console.WindowHeight+Console.WindowTop, _originalCursorTop + pbarHeight + openDescendantsPadding);
 				Console.CursorVisible = true;
 				Console.SetCursorPosition(0, newCursorTop);
 			}

@@ -66,6 +66,9 @@ namespace ShellProgressBar.Example
 				case "test":
 					await RunTestCases(token);
 					return;
+				case "scrolltest":
+					await RunTestCases(token, Console.WindowHeight+5);
+					return;
 				case "example":
 					var nth = args.Length > 1 ? int.Parse(args[1]) : 0;
 					await RunExample(nth, token);
@@ -88,12 +91,16 @@ namespace ShellProgressBar.Example
 			await example.Start(token);
 		}
 
-		private static async Task RunTestCases(CancellationToken token)
+		private static async Task RunTestCases(CancellationToken token, int writeNumOfRowBefore = 0)
 		{
 			var i = 0;
 			foreach (var example in TestCases)
 			{
 				if (i > 0) Console.Clear(); //not necessary but for demo/recording purposes.
+
+				for (int r = 0; r< writeNumOfRowBefore; r++)
+					Console.WriteLine($"Writing output before test. Row {r+1}/{writeNumOfRowBefore}");
+
 				await example.Start(token);
 				i++;
 			}
