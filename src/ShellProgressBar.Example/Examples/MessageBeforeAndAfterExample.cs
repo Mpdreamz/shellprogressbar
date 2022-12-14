@@ -8,7 +8,7 @@ namespace ShellProgressBar.Example.Examples
 		protected override Task StartAsync()
 		{
 			Console.WriteLine("This should not be overwritten");
-			const int totalTicks = 10;
+			int totalTicks = Console.WindowHeight;
 			var options = new ProgressBarOptions
 			{
 				ForegroundColor = ConsoleColor.Yellow,
@@ -18,9 +18,27 @@ namespace ShellProgressBar.Example.Examples
 			};
 			using (var pbar = new ProgressBar(totalTicks, "showing off styling", options))
 			{
-				TickToCompletion(pbar, totalTicks, sleep: 500, i =>
+				TickToCompletion(pbar, totalTicks, sleep: 250, i =>
 				{
-					pbar.WriteErrorLine($"This should appear above:{i}");
+					if (i % 5 == 0)
+					{
+						// Single line
+						pbar.WriteErrorLine($"[{i}] This{Environment.NewLine}[{i}] is{Environment.NewLine}[{i}] over{Environment.NewLine}[{i}] 4 lines");
+						return;
+					}
+					if (i % 4 == 0)
+					{
+						// Single line
+						pbar.WriteErrorLine($"[{i}] This has{Environment.NewLine}[{i}] 2 lines.");
+						return;
+					}
+					if (i % 3 == 0)
+					{
+						// Single line
+						pbar.WriteErrorLine($"[{i}] This is a very long line {new string('.', Console.BufferWidth)} and should be split over 2 lines");
+						return;
+					}
+					pbar.WriteErrorLine($"[{i}] This should appear above");
 				});
 			}
 
