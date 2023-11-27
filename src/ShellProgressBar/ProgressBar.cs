@@ -181,8 +181,9 @@ namespace ShellProgressBar
 				durationString +=
 					$" / {GetDurationString(estimatedDuration)}";
 
-			var column1Width = Console.WindowWidth - durationString.Length - (depth * 2) + 2;
-			var column2Width = durationString.Length;
+			int durationStringWidth = durationString.GetColumnWidth();
+			//assume: depth char column width
+			var column1Width = Console.WindowWidth - durationStringWidth - (depth * 2) + 2;
 
 			if (!string.IsNullOrWhiteSpace(ProgressBarOptions.ProgressMessageEncodingName))
 			{
@@ -194,17 +195,14 @@ namespace ShellProgressBar
 			else
 				DrawBottomHalfPrefix(indentation, depth);
 
-			var format = $"{{0, -{column1Width}}}{{1,{column2Width}}}";
-			var percentageFormatedString = string.Format(percentageFormat, percentage);
-			var truncatedMessage = StringExtensions.Excerpt(percentageFormatedString + message, column1Width);
-
-			if (disableBottomPercentage)
+			if (!disableBottomPercentage)
 			{
-				truncatedMessage = StringExtensions.Excerpt(message, column1Width);
+				var percentageFormatedString = string.Format(percentageFormat, percentage);
+				message = percentageFormatedString + message;
+				
 			}
 
-			var formatted = string.Format(format, truncatedMessage, durationString);
-			var m = formatted + new string(' ', Math.Max(0, maxCharacterWidth - formatted.Length));
+			string m = StringExtensions.TurncatedRightPad(message, column1Width) + durationString;
 			Console.Write(m);
 		}
 
