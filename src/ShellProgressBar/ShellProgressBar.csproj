@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <!--<Import Project="..\..\build\Versioning.targets" />-->
   <PropertyGroup>
     <AssemblyName>ShellProgressBar</AssemblyName>
@@ -22,5 +22,12 @@
     </PackageReference>
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShellProgressBar.UnicodeSourceGenerator\ShellProgressBar.UnicodeSourceGenerator.csproj"
+                      Condition=" '$(TargetFramework)' != 'netstandard1.3' "
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
   </ItemGroup>
 </Project>

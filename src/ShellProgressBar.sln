@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShellProgressBar.Tests", "..\test\ShellProgressBar.Tests\ShellProgressBar.Tests.csproj", "{7F6B9B22-0375-46C4-ADEB-30F5BF6DB7B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShellProgressBar.UnicodeSourceGenerator", "ShellProgressBar.UnicodeSourceGenerator\ShellProgressBar.UnicodeSourceGenerator.csproj", "{C8B6F7DC-2AF0-47A5-8EC9-A909360322F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7F6B9B22-0375-46C4-ADEB-30F5BF6DB7B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F6B9B22-0375-46C4-ADEB-30F5BF6DB7B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F6B9B22-0375-46C4-ADEB-30F5BF6DB7B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8B6F7DC-2AF0-47A5-8EC9-A909360322F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8B6F7DC-2AF0-47A5-8EC9-A909360322F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8B6F7DC-2AF0-47A5-8EC9-A909360322F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8B6F7DC-2AF0-47A5-8EC9-A909360322F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
