@@ -13,8 +13,10 @@ namespace ShellProgressBar.Example
 		private static readonly IList<IProgressBarExample> TestCases = new List<IProgressBarExample>
 		{
 			new PersistMessageExample(),
+			new CJKPersistMessageExample(),
 			new FixedDurationExample(),
 			new DeeplyNestedProgressBarTreeExample(),
+			new CJKDeeplyNestedProgressBarTreeExample(),
 			new NestedProgressBarPerStepProgress(),
 			new DrawsOnlyOnTickExample(),
 			new ThreadedTicksOverflowExample(),
