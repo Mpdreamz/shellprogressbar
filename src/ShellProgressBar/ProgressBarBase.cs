@@ -90,7 +90,7 @@ namespace ShellProgressBar
 		{
 			get
 			{
-				var percentage = Math.Max(0, Math.Min(100, (100.0 / this._maxTicks) * this._currentTick));
+				var percentage = Math.Max(0, Math.Min(100, 100.0 * this._currentTick / this._maxTicks));
 				// Gracefully handle if the percentage is NaN due to division by 0
 				if (double.IsNaN(percentage) || percentage < 0) percentage = 100;
 				return percentage;
