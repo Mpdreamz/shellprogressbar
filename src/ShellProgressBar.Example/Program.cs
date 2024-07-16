@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ShellProgressBar.Example.Examples;
@@ -44,7 +43,8 @@ namespace ShellProgressBar.Example
 			new DeeplyNestedProgressBarTreeExample(),
 			new EstimatedDurationExample(),
 			new DownloadProgressExample(),
-			new AlternateFinishedColorExample()
+			new AlternateFinishedColorExample(),
+			new AutomaticEstimatedDurationExample()
 		};
 
 		public static async Task Main(string[] args)
@@ -66,6 +66,9 @@ namespace ShellProgressBar.Example
 				case "test":
 					await RunTestCases(token);
 					return;
+				case "scrolltest":
+					await RunTestCases(token, Console.WindowHeight+5);
+					return;
 				case "example":
 					var nth = args.Length > 1 ? int.Parse(args[1]) : 0;
 					await RunExample(nth, token);
@@ -78,7 +81,9 @@ namespace ShellProgressBar.Example
 
 		private static async Task RunExample(int nth, CancellationToken token)
 		{
-			if (nth > Examples.Count - 1 || nth < 0)
+			if (nth < 0)
+				nth = Examples.Count + nth;
+			if (nth > Examples.Count - 1)
 			{
 				await Console.Error.WriteLineAsync($"There are only {Examples.Count} examples, {nth} is not valid");
 			}
@@ -88,12 +93,16 @@ namespace ShellProgressBar.Example
 			await example.Start(token);
 		}
 
-		private static async Task RunTestCases(CancellationToken token)
+		private static async Task RunTestCases(CancellationToken token, int writeNumOfRowBefore = 0)
 		{
 			var i = 0;
 			foreach (var example in TestCases)
 			{
 				if (i > 0) Console.Clear(); //not necessary but for demo/recording purposes.
+
+				for (int r = 0; r< writeNumOfRowBefore; r++)
+					Console.WriteLine($"Writing output before test. Row {r+1}/{writeNumOfRowBefore}");
+
 				await example.Start(token);
 				i++;
 			}

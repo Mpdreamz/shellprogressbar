@@ -82,6 +82,11 @@ namespace ShellProgressBar
 		public bool ShowEstimatedDuration { get; set; }
 
 		/// <summary>
+		/// Try to calculate the duration for you based on total ticks vs time spent on current ticks
+		/// </summary>
+		public bool AutomaticEstimatedDuration { get; set; }
+
+		/// <summary>
 		/// Whether to show the percentage number
 		/// </summary>
 		public bool DisableBottomPercentage { get; set; } = false;
